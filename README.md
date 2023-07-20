@@ -1,11 +1,16 @@
 # AmBIENCe2ABM.jl
+
 A Julia module for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
 [ArchetypeBuildingModel.jl.](https://github.com/vttresearch/ArchetypeBuildingModel).
 
 
 ## Key contents
 
-TODO.
+1. `abm_data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
+2. `ambience_data/` contains the raw input data files for the processing.
+3. `assumptions/` contains auxiliary data that needs to be assumed in order to complete the final dataset for ABM.jl.
+4. `src/` contains the Julia source code for the `AmBIENCE2ABM.jl` module.
+5. `datapackage.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
 
 
 ## Installation
