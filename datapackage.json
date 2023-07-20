@@ -1,0 +1,58 @@
+{
+    "name": "ambience2abm",
+    "resources": [],
+    "license": "CC-BY-4.0",
+    "datapackage_version": "",
+    "title": "AmBIENCe2ABM",
+    "description": "A datapackage processed from AmBIENCe project EU27 building stock data for use with ArchetypeBuildingModel.jl.",
+    "homepage": "https://github.com/spine-tools/AmBIENCe2ABM.jl",
+    "version": "",
+    "sources": [
+        {
+            "name": "D4.1 Database of grey-box model parameter values for EU building typologies",
+            "web": "https://ambience-project.eu/wp-content/uploads/2022/02/AmBIENCe_D4.1_Database-of-grey-box-model-parameter-values-for-EU-building-typologies-update-version-2-submitted.pdf"
+        },
+        {
+            "name": "Database of grey-box model parameters",
+            "web": "https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx"
+        },
+        {
+            "name": "D4.2 - Buildings Energy Systems Database EU27",
+            "web": "https://ambience-project.eu/wp-content/uploads/2022/06/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx"
+        }
+    ],
+    "keywords": [
+        "European Union",
+        "EU",
+        "Building stock",
+        "Building structures",
+        "Fenestration",
+        "Construction",
+        "AmBIENCe",
+        "mopo",
+        "ABM.jl",
+        "ArchetypeBuildingModel.jl"
+    ],
+    "maintainers": [
+        {
+            "name": "Topi Rasku",
+            "email": "topi.rasku@vtt.fi",
+            "web": "https://cris.vtt.fi/en/persons/topi-rasku"
+        }
+    ],
+    "contributors": [
+        {
+            "name": "Topi Rasku",
+            "email": "topi.rasku@vtt.fi",
+            "web": "https://cris.vtt.fi/en/persons/topi-rasku"
+        }
+    ],
+    "publisher": [
+        {
+            "name": "VTT Technical Research Centre of Finland Ltd",
+            "web": "https://www.vttresearch.com/en"
+        }
+    ],
+    "base": "",
+    "dataDependencies": {}
+}

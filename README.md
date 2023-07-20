@@ -25,8 +25,10 @@ TODO.
 
 ## License
 
-AmBIENCe2ABM.jl is licensed under the [MIT License](https://mit-license.org/).
+The AmBIENCe2ABM.jl code is licensed under the [MIT License](https://mit-license.org/).
 See `LICENSE` for more information.
+
+The processed data and the resulting included datapackage are licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 
 ## How to cite
