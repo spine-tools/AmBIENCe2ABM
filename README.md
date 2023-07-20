@@ -1,5 +1,6 @@
 # AmBIENCe2ABM.jl
-A Julia module for processing AmBIENCe project EU-wide building stock datasets for ArchetypeBuildingModel.jl.
+A Julia module for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
+[ArchetypeBuildingModel.jl.](https://github.com/vttresearch/ArchetypeBuildingModel).
 
 
 ## Key contents
