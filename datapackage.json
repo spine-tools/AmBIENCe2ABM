@@ -53,6 +53,6 @@
             "web": "https://www.vttresearch.com/en"
         }
     ],
-    "base": "",
+    "base": "ambience_data",
     "dataDependencies": {}
 }
