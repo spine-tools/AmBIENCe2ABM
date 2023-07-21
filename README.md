@@ -1,7 +1,7 @@
-# AmBIENCe2ABM.jl
+# AmBIENCe2ABM
 
-A Julia module for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
-[ArchetypeBuildingModel.jl.](https://github.com/vttresearch/ArchetypeBuildingModel).
+A Python package for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
+[ArchetypeBuildingModel.jl](https://github.com/vttresearch/ArchetypeBuildingModel).
 
 
 ## Key contents
@@ -9,7 +9,7 @@ A Julia module for processing [AmBIENCe project](https://ambience-project.eu/) E
 1. `abm_data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
 2. `ambience_data/` contains the raw input data files for the processing.
 3. `assumptions/` contains auxiliary data that needs to be assumed in order to complete the final dataset for ABM.jl.
-4. `src/` contains the Julia source code for the `AmBIENCE2ABM.jl` module.
+4. `src/` contains the Julia source code for the `AmBIENCE2ABM` module.
 5. `datapackage.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
 
 
@@ -30,7 +30,7 @@ TODO.
 
 ## License
 
-The AmBIENCe2ABM.jl code is licensed under the [MIT License](https://mit-license.org/).
+The AmBIENCe2ABM code is licensed under the [MIT License](https://mit-license.org/).
 See `LICENSE` for more information.
 
 The processed data and the resulting included datapackage are licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
@@ -41,7 +41,7 @@ The processed data and the resulting included datapackage are licensed under [Cr
 For the moment, this GitHub page is the only way to reference this piece of code, e.g.:
 
 ```
-Topi Rasku. 2023. AmBIENCe2ABM.jl: A Julia module for processing AmBIENCe project EU-wide building stock datasets for ArchetypeBuildingModel.jl.. Software. GitHub, https://github.com/spine-tools/AmBIENCe2ABM.jl.
+Topi Rasku. 2023. AmBIENCe2ABM.jl: A Julia module for processing AmBIENCe project EU-wide building stock datasets for ArchetypeBuildingModel.jl.. Software. GitHub, https://github.com/spine-tools/AmBIENCe2ABM.
 ```
 
 
