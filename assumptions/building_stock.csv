@@ -1,2 +1,2 @@
-building_stock,building_stock_year,shapefile_path,raster_weight_path
-AmBIENCe_2016,2016,,
+building_stock,building_stock_year,shapefile_path,raster_weight_path,notes
+AmBIENCe_2016,2016,,,"Hotmaps data from until 2016 according to their 'D2.3 WP2 Report – Open Data Set for the EU28', currently treating the entirety of the dataset as a single building stock. Possible future sub-division of countries will require country-level reformatting."

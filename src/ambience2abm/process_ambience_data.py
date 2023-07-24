@@ -33,6 +33,8 @@ class AmBIENCeDataset:
         self.heatsys_df = pd.read_excel(
             building_stock_heatsys_path, skiprows=[0, 1734, 1735]
         )  # Need to skip unnecessary header rows at the start and in the middle...
+        self.structure_types_df = pd.read_csv(structure_types_path)
+        self.building_stocks_df = pd.read_csv(building_stock_path)
 
     def building_periods(self):
         """
@@ -41,7 +43,7 @@ class AmBIENCeDataset:
         Returns
         -------
         building_periods_df
-            a DataFrame for building period .csv export.
+            a DataFrame for building_period.csv export.
         """
         bps = pd.unique(
             list(
