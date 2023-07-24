@@ -14,6 +14,7 @@ class AmBIENCeDataset:
         building_stock_heatsys_path="ambience_data/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx",
         structure_types_path="assumptions/structure_types.csv",
         building_stock_path="assumptions/building_stock.csv",
+        building_type_mappings_path="assumptions/building_type_mappings.csv",
     ):
         """
         Read the AmBIENCe project raw data and assumptions.
@@ -28,13 +29,20 @@ class AmBIENCeDataset:
             path to the 'structure_types.csv' containing assumptions regarding the properties of different structure types.
         building_stock_path : str
             path to the 'building_stock.csv' containing definitions for the required building stock object.
+        building_type_mappings_path : str
+            path to the `building_type_mappings.csv` containing building type to building stock mappings.
         """
-        self.statistics_df = pd.read_excel(building_stock_properties_path)
-        self.heatsys_df = pd.read_excel(
-            building_stock_heatsys_path, skiprows=[0, 1734, 1735]
-        )  # Need to skip unnecessary header rows at the start and in the middle...
-        self.structure_types_df = pd.read_csv(structure_types_path)
-        self.building_stocks_df = pd.read_csv(building_stock_path)
+        self.data = pd.merge(
+            pd.read_excel(building_stock_properties_path),
+            pd.read_excel(
+                building_stock_heatsys_path, skiprows=[0]
+            ),  # Skip first row of header, later headers will be omitted through inner join.
+            left_on="REFERENCE BUILDING CODE",
+            right_on="Building typology",
+        )
+        self.structure_types = pd.read_csv(structure_types_path)
+        self.building_stocks = pd.read_csv(building_stock_path)
+        self.building_type_mappings = pd.read_csv(building_type_mappings_path)
 
     def building_periods(self):
         """
@@ -49,7 +57,7 @@ class AmBIENCeDataset:
             list(
                 zip(
                     *[
-                        self.statistics_df[col]
+                        self.data[col]
                         for col in [
                             "REFERENCE BUILDING CONSTRUCTION YEAR LOW",
                             "REFERENCE BUILDING CONSTRUCTION YEAR HIGH",
