@@ -3,6 +3,7 @@
 # Classes and methods for processing the AmBIENCe datasets.
 
 import pandas as pd
+from itertools import product
 
 
 class AmBIENCeDataset:
@@ -42,11 +43,35 @@ class AmBIENCeDataset:
         )
         self.structure_types = pd.read_csv(structure_types_path)
         self.building_stocks = pd.read_csv(building_stock_path)
-        self.building_type_mappings = pd.read_csv(building_type_mappings_path)
+        self.building_type_mappings = self.map_building_type_to_stock(
+            building_type_mappings_path
+        )
+
+    def map_building_type_to_stock(self, building_type_mappings_path):
+        """
+        Create a dictionary mapping building types to their corresponding building stocks.
+
+        Parameters
+        ----------
+        building_type_mappings_path : str
+            path to the `building_type_mappings.csv` containing building type to building stock mappings.
+
+        Returns
+        -------
+        building_type_mappings
+            a Dictionary mapping building types to building stocks.
+        """
+        bt2bs = pd.read_csv(building_type_mappings_path)
+        return {
+            k: v
+            for (k, v) in zip(
+                *[bt2bs[col] for col in ["building_type", "building_stock"]]
+            )
+        }
 
     def building_periods(self):
         """
-        Processes the unique building periods from the data.
+        Process the unique building periods from the data.
 
         Returns
         -------
@@ -69,6 +94,76 @@ class AmBIENCeDataset:
         return pd.DataFrame(
             [["-".join([str(p[0]), str(p[1])]), p[0], p[1]] for p in bps],
             columns=["building_period", "period_start", "period_end"],
+        )
+
+    def building_stock_statistics(self):
+        """
+        Process the basic building stock statistics from data for ArchetypeBuildingModel.jl.
+
+        Returns
+        -------
+        building_stock_statistics_df
+            a DataFrame for building_stock_statistics.csv export.
+        """
+        bss = pd.DataFrame(  # Form the basic structure.
+            [
+                [
+                    self.building_type_mappings[
+                        r["REFERENCE BUILDING USE CODE"]
+                    ],  # Building stock from building type mapping
+                    r[
+                        "REFERENCE BUILDING USE CODE"
+                    ],  # Building type directly from data
+                    "-".join(
+                        [
+                            str(r["REFERENCE BUILDING CONSTRUCTION YEAR LOW"]),
+                            str(r["REFERENCE BUILDING CONSTRUCTION YEAR HIGH"]),
+                        ]
+                    ),  # Parse building period from low and high years
+                    r[
+                        "REFERENCE BUILDING COUNTRY CODE"
+                    ],  # Location ID from country code.
+                    r[" ".join([hs, "FUEL USED"])],  # Heating system fuel from data.
+                    r["NUMBER OF REFERENCE BUILDINGS IN THE BUILDING STOCK SEGMENT"]
+                    * r[
+                        " ".join([hs, "PREVALENCY ON BUILDING STOCK"])
+                    ],  # Multiply number of buildings by heat source prevalency.
+                    r[
+                        "REFERENCE BUILDING USEFUL FLOOR AREA (m2)"
+                    ],  # Useful floor area estimated to be roughly equivalent to gross-floor area.
+                ]
+                for ((i, r), hs) in product(
+                    self.data.iterrows(),
+                    ["HEATING SYSTEM 1", "HEATING SYSTEM 2", "HEATING SYSTEM 3"],
+                )
+            ],
+            columns=[
+                "building_stock",
+                "building_type",
+                "building_period",
+                "location_id",
+                "heat_source",
+                "number_of_buildings",
+                "average_gross_floor_area_m2_per_building",
+            ],
+        )
+        return (
+            bss.dropna()  # Drop NaN rows with invalid heating system data.
+            .groupby(  # Group by the actual dimensions...
+                [
+                    "building_stock",
+                    "building_type",
+                    "building_period",
+                    "location_id",
+                    "heat_source",
+                ]
+            )
+            .agg(  # ... and aggregate over the different structural classes in the raw data.
+                {
+                    "number_of_buildings": "sum",
+                    "average_gross_floor_area_m2_per_building": "mean",
+                }
+            )
         )
 
 
