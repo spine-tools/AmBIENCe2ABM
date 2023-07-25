@@ -209,7 +209,8 @@ class AmBIENCeDataset:
             r[" ".join([pretext, "MATERIAL THICKNESS (m)"])]
             * r[" ".join([pretext, "MATERIAL DENSITY (kg/m3)"])]
             * r[" ".join([pretext, "MATERIAL SPECIFIC HEAT CAPACITY (J/kg/K)"])]
-            + 0.5
+            + (not self.structure_types.loc[st, "is_internal"])
+            * 0.5
             * r[" ".join([pretext, "INSULATION MATERIAL THICKNESS (m)"])]
             * r[" ".join([pretext, "INSULATION MATERIAL DENSITY (kg/m3)"])]
             * r[
