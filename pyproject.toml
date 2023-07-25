@@ -3,6 +3,7 @@ requires = [
     "hatchling",
     "pandas",
     "itertools",
+    "numpy",
 ]
 build-backend = "hatchling.build"
 
