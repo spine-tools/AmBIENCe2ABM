@@ -33,7 +33,7 @@ class AmBIENCeDataset:
         building_type_mappings_path : str
             path to the `building_type_mappings.csv` containing building type to building stock mappings.
         """
-        self.data = pd.merge(
+        self.data = pd.merge(  # Merge the data together to make it easier to deal with.
             pd.read_excel(building_stock_properties_path),
             pd.read_excel(
                 building_stock_heatsys_path, skiprows=[0]
@@ -41,49 +41,28 @@ class AmBIENCeDataset:
             left_on="REFERENCE BUILDING CODE",
             right_on="Building typology",
         )
-        self.structure_types = pd.read_csv(structure_types_path)
-        self.building_stocks = pd.read_csv(building_stock_path)
-        self.building_type_mappings = self.map_building_type_to_stock(
-            building_type_mappings_path
+        self.data[
+            "building_period"
+        ] = self.data[  # Create and add `building_period` to avoid dealing with it all the time.
+            [
+                "REFERENCE BUILDING CONSTRUCTION YEAR LOW",
+                "REFERENCE BUILDING CONSTRUCTION YEAR HIGH",
+            ]
+        ].apply(
+            lambda row: "-".join(row.values.astype(str)), axis=1
         )
-
-    def map_building_type_to_stock(self, building_type_mappings_path):
-        """
-        Create a dictionary mapping building types to their corresponding building stocks.
-
-        Parameters
-        ----------
-        building_type_mappings_path : str
-            path to the `building_type_mappings.csv` containing building type to building stock mappings.
-
-        Returns
-        -------
-        building_type_mappings
-            a Dictionary mapping building types to building stocks.
-        """
-        bt2bs = pd.read_csv(building_type_mappings_path)
-        return {
-            k: v
-            for (k, v) in zip(
-                *[bt2bs[col] for col in ["building_type", "building_stock"]]
-            )
-        }
-
-    def map_structure_types(self):
-        """
-        Map ABM structure types to their AmBIENCe counterparts.
-
-        Returns
-        -------
-        st_map
-            a Dictionary mapping ABM structure types to their AmBIENCe counterparts.
-        """
-        return {
-            k: v
-            for (k, v) in zip(
-                *[self.structure_types[col] for col in ["structure_type", "mapping"]]
-            )
-        }
+        self.structure_types = pd.read_csv(structure_types_path).set_index(
+            "structure_type"
+        )
+        self.building_stocks = pd.read_csv(building_stock_path).set_index(
+            "building_stock"
+        )
+        self.building_type_mappings = pd.read_csv(
+            building_type_mappings_path
+        ).set_index("building_type")
+        self.interior_node_depth = interior_node_depth
+        self.period_of_variations = period_of_variations
+        self.building_stock_statistics = self.calculate_building_stock_statistics()
 
     def building_periods(self):
         """
@@ -94,25 +73,25 @@ class AmBIENCeDataset:
         building_periods_df
             a DataFrame for building_period.csv export.
         """
-        bps = pd.unique(
-            list(
-                zip(
-                    *[
-                        self.data[col]
-                        for col in [
-                            "REFERENCE BUILDING CONSTRUCTION YEAR LOW",
-                            "REFERENCE BUILDING CONSTRUCTION YEAR HIGH",
-                        ]
-                    ]
-                )
+        return (
+            self.data[
+                [
+                    "building_period",
+                    "REFERENCE BUILDING CONSTRUCTION YEAR LOW",
+                    "REFERENCE BUILDING CONSTRUCTION YEAR HIGH",
+                ]
+            ]
+            .rename(
+                columns={
+                    "REFERENCE BUILDING CONSTRUCTION YEAR LOW": "period_start",
+                    "REFERENCE BUILDING CONSTRUCTION YEAR HIGH": "period_end",
+                }
             )
-        )
-        return pd.DataFrame(
-            [["-".join([str(p[0]), str(p[1])]), p[0], p[1]] for p in bps],
-            columns=["building_period", "period_start", "period_end"],
+            .set_index("building_period")
+            .drop_duplicates()
         )
 
-    def building_stock_statistics(self):
+    def calculate_building_stock_statistics(self):
         """
         Process the basic building stock statistics from data for ArchetypeBuildingModel.jl.
 
@@ -124,8 +103,8 @@ class AmBIENCeDataset:
         bss = pd.DataFrame(  # Form the basic structure.
             [
                 [
-                    self.building_type_mappings[
-                        r["REFERENCE BUILDING USE CODE"]
+                    self.building_type_mappings.loc[
+                        r["REFERENCE BUILDING USE CODE"], "building_stock"
                     ],  # Building stock from building type mapping
                     r[
                         "REFERENCE BUILDING USE CODE"
