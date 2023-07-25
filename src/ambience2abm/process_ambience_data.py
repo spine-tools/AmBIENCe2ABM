@@ -69,6 +69,22 @@ class AmBIENCeDataset:
             )
         }
 
+    def map_structure_types(self):
+        """
+        Map ABM structure types to their AmBIENCe counterparts.
+
+        Returns
+        -------
+        st_map
+            a Dictionary mapping ABM structure types to their AmBIENCe counterparts.
+        """
+        return {
+            k: v
+            for (k, v) in zip(
+                *[self.structure_types[col] for col in ["structure_type", "mapping"]]
+            )
+        }
+
     def building_periods(self):
         """
         Process the unique building periods from the data.
@@ -165,6 +181,20 @@ class AmBIENCeDataset:
                 }
             )
         )
+
+    def calculate_structure_effective_thermal_mass(
+        self,
+        structure_type,
+        period_of_variations,
+    ):
+        """
+        Calculate the effective thermal mass according to 'EN ISO 13786:2017 Annex C.2.4' effective thickness method.
+
+        Parameters
+        ----------
+        thermal_mass : float
+            the raw structural thermal mass of the
+        """
 
 
 class ABMDataset:
