@@ -109,12 +109,7 @@ class AmBIENCeDataset:
                     r[
                         "REFERENCE BUILDING USE CODE"
                     ],  # Building type directly from data
-                    "-".join(
-                        [
-                            str(r["REFERENCE BUILDING CONSTRUCTION YEAR LOW"]),
-                            str(r["REFERENCE BUILDING CONSTRUCTION YEAR HIGH"]),
-                        ]
-                    ),  # Parse building period from low and high years
+                    r["building_period"],  # Fetch building period.
                     r[
                         "REFERENCE BUILDING COUNTRY CODE"
                     ],  # Location ID from country code.
