@@ -19,6 +19,7 @@ class AmBIENCeDataset:
         building_type_mappings_path="assumptions/building_type_mappings.csv",
         interior_node_depth=0.1,
         period_of_variations=2225140,
+        heatsys_skiprows=[0],
     ):
         """
         Read the AmBIENCe project raw data and assumptions.
@@ -39,24 +40,13 @@ class AmBIENCeDataset:
             assumed depth of the aggregated effective thermal mass within the structures, given as a fraction of the total thermal resistance from the indoor surface to the middle of the thermal insulation.
         period_of_variations : float
             assumed period of variations in seconds for the 'EN ISO 13786:2017 Annex C.2.4 Effective thickness method'.
+        heatsys_skiprows : array
+            row indices to skip when reading AmBIENCe heating system data.
         """
-        self.data = pd.merge(  # Merge the data together to make it easier to deal with.
-            pd.read_excel(building_stock_properties_path),
-            pd.read_excel(
-                building_stock_heatsys_path, skiprows=[0]
-            ),  # Skip first row of header, later headers will be omitted through inner join.
-            left_on="REFERENCE BUILDING CODE",
-            right_on="Building typology",
-        )
-        self.data[
-            "building_period"
-        ] = self.data[  # Create and add `building_period` to avoid dealing with it all the time.
-            [
-                "REFERENCE BUILDING CONSTRUCTION YEAR LOW",
-                "REFERENCE BUILDING CONSTRUCTION YEAR HIGH",
-            ]
-        ].apply(
-            lambda row: "-".join(row.values.astype(str)), axis=1
+        self.data = self.preprocess_data(
+            building_stock_properties_path,
+            building_stock_heatsys_path,
+            heatsys_skiprows,
         )
         self.structure_types = pd.read_csv(structure_types_path).set_index(
             "structure_type"
@@ -70,6 +60,61 @@ class AmBIENCeDataset:
         self.interior_node_depth = interior_node_depth
         self.period_of_variations = period_of_variations
         self.building_stock_statistics = self.calculate_building_stock_statistics()
+
+    def preprocess_data(
+        self,
+        building_stock_properties_path,
+        building_stock_heatsys_path,
+        heatsys_skiprows,
+    ):
+        """
+        Preprocess AmBIENCe data to make it more manageable.
+
+        Parameters
+        ----------
+        building_stock_properties_path : str
+            path to the 'AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx' raw data file.
+        building_stock_heatsys_path : str
+            path to the 'AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx' raw data file.
+        heatsys_skiprows : array
+            row indices to skip when reading AmBIENCe heating system data.
+
+        Returns
+        -------
+        data
+            a DataFrame containing the combined and extended AmBIENCe data.
+        """
+        data = pd.merge(  # Merge the data together to make it easier to deal with.
+            pd.read_excel(building_stock_properties_path),
+            pd.read_excel(
+                building_stock_heatsys_path, skiprows=heatsys_skiprows
+            ),  # Skip first row of header, later headers will be omitted through inner join.
+            left_on="REFERENCE BUILDING CODE",
+            right_on="Building typology",
+        )
+        # Create and add `building_period` to avoid dealing with it manually all the time.
+        data["building_period"] = data[
+            [
+                "REFERENCE BUILDING CONSTRUCTION YEAR LOW",
+                "REFERENCE BUILDING CONSTRUCTION YEAR HIGH",
+            ]
+        ].apply(lambda row: "-".join(row.values.astype(str)), axis=1)
+        # Calculate structure weights for each row
+        col = "BUILDING STOCK SEGMENT USEFUL FLOOR AREA (m2)"
+        cols = [
+            "REFERENCE BUILDING USE CODE",
+            "building_period",
+            "REFERENCE BUILDING COUNTRY CODE",
+        ]
+        data = data.set_index(cols)
+        agg_data = data.groupby(cols).agg(
+            total_area_over_material_combinations_m2=(col, sum)
+        )
+        data = data.join(agg_data)
+        data["material_combination_weight"] = (
+            data[col] / data["total_area_over_material_combinations_m2"]
+        )
+        return data.reset_index().set_index("REFERENCE BUILDING CODE")
 
     def building_periods(self):
         """
