@@ -216,6 +216,8 @@ class AmBIENCeDataset:
         """
         Calculate the effective thermal mass according to 'EN ISO 13786:2017 Annex C.2.4 effective thickness method'.
 
+        Note that internal structures assume no insulation.
+
         Parameters
         ----------
         r : DataFrame
@@ -234,7 +236,9 @@ class AmBIENCeDataset:
             r[" ".join([pretext, "MATERIAL THICKNESS (m)"])]
             * r[" ".join([pretext, "MATERIAL DENSITY (kg/m3)"])]
             * r[" ".join([pretext, "MATERIAL SPECIFIC HEAT CAPACITY (J/kg/K)"])]
-            + (not self.structure_types.loc[st, "is_internal"])
+            + (
+                not self.structure_types.loc[st, "is_internal"]
+            )  # Internal structures assume no insulation.
             * 0.5
             * r[" ".join([pretext, "INSULATION MATERIAL THICKNESS (m)"])]
             * r[" ".join([pretext, "INSULATION MATERIAL DENSITY (kg/m3)"])]
