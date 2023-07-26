@@ -509,3 +509,27 @@ class ABMDataset:
         self.ventilation_and_fenestration_statistics = (
             ambdata.calculate_ventilation_and_fenestration_statistics()
         )
+
+    def export_csvs(self, folderpath="data/"):
+        """
+        Export the ABMDataset contents as .csv files.
+
+        Parameters
+        ----------
+        folderpath : str
+            the folder path where to export the contents.
+
+        Returns
+        -------
+        a bunch of .csv files as output, but the function returns nothing.
+        """
+        self.building_period.to_csv(folderpath + "building_periods.csv")
+        self.building_stock.to_csv(folderpath + "building_stock.csv")
+        self.structure_type.to_csv(folderpath + "structure_type.csv")
+        self.building_stock_statistics.to_csv(
+            folderpath + "building_stock_statistics.csv"
+        )
+        self.structure_statistics.to_csv(folderpath + "structure_statistics.csv")
+        self.ventilation_and_fenestration_statistics.to_csv(
+            folderpath + "ventilation_and_fenestration_statistics.csv"
+        )

@@ -1,0 +1,6 @@
+structure_type,mapping,interior_resistance_m2K_W,exterior_resistance_m2K_W,linear_thermal_bridge_W_mK,is_internal,ventilation_space_heat_flow_direction,structure_type_notes
+base_floor,FLOOR,0.17,0.04,0,False,downwards,Based on the AmBIENCe D4.1 report.
+exterior_wall,WALL,0.13,0.04,0,False,horizontal,Based on the AmBIENCe D4.1 report.
+partition_wall,WALL,0.25,0.25,0,True,horizontal,"based on `Suomen rakentamismääräyskokoelma C4: Lämmöneristys, ohjeet 2003` table 2, ground resistance averaged over table 6, and `Energiatehokkuus - Rakennuksen energiankulutuksen ja lämmöntehontarpeen laskenta 2018`. Surface resistances based on `Rakennusten lämmitys- ja jäähdytysenergiantarpeen laskenta yksinkertaisella tuntitason mallilla` 2015 by Kai Sirén, and my IDA ESBO calibrations."
+roof,ROOF,0.1,0.04,0,False,upwards,Based on the AmBIENCe D4.1 report.
+separating_floor,FLOOR,0.25,0.25,0,True,upwards,"based on `Suomen rakentamismääräyskokoelma C4: Lämmöneristys, ohjeet 2003` table 2, ground resistance averaged over table 6, and `Energiatehokkuus - Rakennuksen energiankulutuksen ja lämmöntehontarpeen laskenta 2018`. Surface resistances based on `Rakennusten lämmitys- ja jäähdytysenergiantarpeen laskenta yksinkertaisella tuntitason mallilla` 2015 by Kai Sirén, and my IDA ESBO calibrations."
