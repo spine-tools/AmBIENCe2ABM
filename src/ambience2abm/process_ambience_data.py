@@ -259,6 +259,77 @@ class AmBIENCeDataset:
             )
         )
 
+    def calculate_U_values(self, r, st):
+        """
+        Calculate U-values for structure types.
+
+        Note that internal structures assume no insulation.
+        Ground-coupled heat losses based on 'Kissock. K., Simplified Model for Ground Heat Transfer from Slab-on-Grade Buildings, (c) 2013 ASHRAE'
+
+        Parameters
+        ----------
+        r : DataFrame
+            row of the raw AmBIENCe data used for the calculations.
+        st : str
+            the ABM structure type currently being processed.
+
+        Returns
+        -------
+        U_values_W_m2K
+            a tuple containing the exterior, ground, interior, and total U-values of the structure.
+        """
+        pretext = " ".join(
+            ["REFERENCE BUILDING", self.structure_types.loc[st, "mapping"]]
+        )
+        material_resistance = (
+            r[" ".join([pretext, "MATERIAL THICKNESS (m)"])]
+            / r[" ".join([pretext, "MATERIAL THERMAL CONDUCTIVITY (W/m/K)"])]
+        )
+        insulation_resistance = (
+            r[" ".join([pretext, "INSULATION MATERIAL THICKNESS (m)"])]
+            / r[" ".join([pretext, "INSULATION MATERIAL THERMAL CONDUCTIVITY (W/m/K)"])]
+        )
+        # Internal structures assume no insulation.
+        if self.structure_types.loc[st, "is_internal"]:
+            intR = (
+                self.interior_node_depth * 0.5 * material_resistance
+                + self.structure_types.loc[st, "interior_resistance_m2K_W"]
+            )
+            extR = (
+                2 - self.interior_node_depth
+            ) * 0.5 * material_resistance + self.structure_types.loc[
+                st, "exterior_resistance_m2K_W"
+            ]
+            return (1.0 / extR, 0.0, 1.0 / intR, 1.0 / extR + 1.0 / intR)
+        elif st == "base_floor":  # Base floor connects to the ground.
+            intR = (
+                self.interior_node_depth
+                * (material_resistance + 0.5 * insulation_resistance)
+                + self.structure_types.loc[st, "interior_resistance_m2K_W"]
+            )
+            flrR = (
+                material_resistance
+                + insulation_resistance
+                + self.structure_types.loc[st, "interior_resistance_m2K_W"]
+            )
+            grnR = 1.0 / (0.114 / (0.7044 + flrR) + 0.8768 / (2.818 + flrR))
+            grnR -= intR
+            return (0.0, 1.0 / grnR, 1.0 / intR, 1.0 / (intR + grnR))
+        else:  # Other structures connect to the ambient air.
+            intR = (
+                self.interior_node_depth
+                * (material_resistance + 0.5 * insulation_resistance)
+                + self.structure_types.loc[st, "interior_resistance_m2K_W"]
+            )
+            extR = (
+                material_resistance
+                + insulation_resistance
+                + self.structure_types.loc[st, "interior_resistance_m2K_W"]
+                + self.structure_types.loc[st, "exterior_resistance_m2K_W"]
+                - intR
+            )
+            return (1.0 / extR, 0.0, 1.0 / intR, 1.0 / (extR + intR))
+
 
 class ABMDataset:
     """An object class for containing and exporting ArchetypeBuildingModel.jl compatible data."""
