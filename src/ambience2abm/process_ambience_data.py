@@ -416,6 +416,78 @@ class AmBIENCeDataset:
             )
         )
 
+    def calculate_ventilation_and_fenestration_statistics(self):
+        """
+        Process ventilation and fenestration statistics for ArchetypeBuildingModel.jl.
+
+        Note that AmBIENCe data contains no information related to ventilation
+        or infiltration whatsoever, even though they tend to be very significant
+        when it comes to heat losses from buildings.
+
+        Returns
+        -------
+        ventilation_and_fenestration_statistics
+            a DataFrame for `ventilation_and_fenestration_statistics.csv` export.
+        """
+        return (
+            pd.DataFrame(
+                [
+                    [
+                        r["REFERENCE BUILDING USE CODE"],
+                        r["building_period"],
+                        r["REFERENCE BUILDING COUNTRY CODE"],
+                        r["material_combination_weight"]
+                        * self.ventilation["HRU_efficiency"][0],
+                        r["material_combination_weight"]
+                        * self.ventilation["infiltration_rate_1_h"][0],
+                        r["material_combination_weight"]
+                        * self.fenestration.loc[
+                            (
+                                r["REFERENCE BUILDING WINDOW GLAZING TYPE"],
+                                r["REFERENCE BUILDING WINDOW COATED"],
+                            ),
+                            "normal_solar_energy_transmittance",
+                        ]
+                        * (
+                            1
+                            - self.fenestration.loc[
+                                (
+                                    r["REFERENCE BUILDING WINDOW GLAZING TYPE"],
+                                    r["REFERENCE BUILDING WINDOW COATED"],
+                                ),
+                                "frame_area_fraction",
+                            ]
+                        ),
+                        r["material_combination_weight"]
+                        * self.ventilation["ventilation_rate_1_h"][0],
+                        r["material_combination_weight"]
+                        * r["REFERENCE BUILDING WINDOW U-VALUE (W/m2/K)"],
+                    ]
+                    for (i, r) in self.data.iterrows()
+                ],
+                columns=[
+                    "building_type",
+                    "building_period",
+                    "location_id",
+                    "HRU_efficiency",
+                    "infiltration_rate_1_h",
+                    "total_normal_solar_energy_transmittance",
+                    "ventilation_rate_1_h",
+                    "window_U_value_W_m2K",
+                ],
+            )
+            .groupby(["building_type", "building_period", "location_id"])
+            .agg(
+                {
+                    "HRU_efficiency": "sum",
+                    "infiltration_rate_1_h": "sum",
+                    "total_normal_solar_energy_transmittance": "sum",
+                    "ventilation_rate_1_h": "sum",
+                    "window_U_value_W_m2K": "sum",
+                }
+            )
+        )
+
 
 class ABMDataset:
     """An object class for containing and exporting ArchetypeBuildingModel.jl compatible data."""
