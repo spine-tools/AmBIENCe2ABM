@@ -330,6 +330,79 @@ class AmBIENCeDataset:
             )
             return (1.0 / extR, 0.0, 1.0 / intR, 1.0 / (extR + intR))
 
+    def calculate_structure_statistics(self):
+        """
+        Process structural statistics from data for ArchetypeBuildingModel.jl.
+
+        Returns
+        -------
+        structural_statistics
+            a DataFrame for structure_statistics.csv export.
+        """
+        return (
+            pd.DataFrame(
+                [
+                    [
+                        r["REFERENCE BUILDING USE CODE"],
+                        r["building_period"],
+                        r["REFERENCE BUILDING COUNTRY CODE"],
+                        st,
+                        r["material_combination_weight"]
+                        * r[
+                            " ".join(
+                                [
+                                    "REFERENCE BUILDING",
+                                    self.structure_types.loc[st, "mapping"],
+                                    "U-VALUE (W/m2/K)",
+                                ]
+                            )
+                        ],
+                        r["material_combination_weight"]
+                        * self.calculate_weighted_effective_thermal_mass(
+                            r,
+                            st,
+                        ),
+                        r["material_combination_weight"]
+                        * self.structure_types.loc[st, "linear_thermal_bridge_W_mK"],
+                    ]
+                    + [
+                        r["material_combination_weight"] * x
+                        for x in self.calculate_U_values(r, st)
+                    ]
+                    for ((i, r), st) in product(
+                        self.data.iterrows(), self.structure_types.index
+                    )
+                ],
+                columns=[
+                    "building_type",
+                    "building_period",
+                    "location_id",
+                    "structure_type",
+                    "design_U_value_m2K",
+                    "effective_thermal_mass_J_m2K",
+                    "linear_thermal_bridges_W_mK",
+                    "external_U_value_to_ambient_air_W_m2K",
+                    "external_U_value_to_ground_W_m2K",
+                    "internal_U_value_to_structure_W_m2K",
+                    "total_U_value_W_m2K",
+                ],
+            )
+            .groupby(
+                ["building_type", "building_period", "location_id", "structure_type"]
+            )
+            .agg(
+                {
+                    "design_U_value_m2K": "sum",
+                    "effective_thermal_mass_J_m2K": "sum",
+                    "linear_thermal_bridges_W_mK": "sum",
+                    "external_U_value_to_ambient_air_W_m2K": "sum",
+                    "external_U_value_to_ground_W_m2K": "sum",
+                    "internal_U_value_to_structure_W_m2K": "sum",
+                    "total_U_value_W_m2K": "sum",
+                }
+            )
+        )
+
 
 class ABMDataset:
     """An object class for containing and exporting ArchetypeBuildingModel.jl compatible data."""
