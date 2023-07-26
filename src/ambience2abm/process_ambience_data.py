@@ -212,13 +212,9 @@ class AmBIENCeDataset:
         self,
         r,
         st,
-        agg_bss,
     ):
         """
         Calculate the effective thermal mass according to 'EN ISO 13786:2017 Annex C.2.4 effective thickness method'.
-
-        Uses a normalized weight for the thermal mass to account for potential
-        different structure classes in the AmBIENCe data.
 
         Parameters
         ----------
@@ -226,27 +222,11 @@ class AmBIENCeDataset:
             row of the raw AmBIENCe data used for the calculations.
         st : str
             the ABM structure type currently being processed.
-        agg_bss : DataFrame
-            aggregated building stock statistics for calculating proper normalized weights.
 
         Returns
         -------
         effective_thermal_mass_J_m2K
         """
-        index_tuple = (
-            r["REFERENCE BUILDING USE CODE"],  # Building type equals the use code.
-            r["building_period"],
-            r["REFERENCE BUILDING COUNTRY CODE"],
-        )
-        # Calculate the weight from the current total floor area vs the total aggregated floor area.
-        weight = (
-            r["REFERENCE BUILDING USEFUL FLOOR AREA (m2)"]
-            * r["NUMBER OF REFERENCE BUILDINGS IN THE BUILDING STOCK SEGMENT"]
-        ) / (
-            agg_bss.loc[index_tuple, "number_of_buildings"]
-            * agg_bss.loc[index_tuple, "average_gross_floor_area_m2_per_building"]
-        )
-        # Calculate the total specific heat capacity per structure area up until the middle of the insulation.
         pretext = " ".join(
             ["REFERENCE BUILDING", self.structure_types.loc[st, "mapping"]]
         )
