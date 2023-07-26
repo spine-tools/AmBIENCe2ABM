@@ -17,6 +17,7 @@ class AmBIENCeDataset:
         structure_types_path="assumptions/structure_types.csv",
         building_stock_path="assumptions/building_stock.csv",
         building_type_mappings_path="assumptions/building_type_mappings.csv",
+        fenestration_path="assumptions/fenestration.csv",
         interior_node_depth=0.1,
         period_of_variations=2225140,
         heatsys_skiprows=[0],
@@ -36,6 +37,8 @@ class AmBIENCeDataset:
             path to the 'building_stock.csv' containing definitions for the required building stock object.
         building_type_mappings_path : str
             path to the `building_type_mappings.csv` containing building type to building stock mappings.
+        fenestration_path : str
+            path to the `fenestration.csv` containing assumption regarding fenestration properties.
         interior_node_depth : float
             assumed depth of the aggregated effective thermal mass within the structures, given as a fraction of the total thermal resistance from the indoor surface to the middle of the thermal insulation.
         period_of_variations : float
@@ -60,6 +63,12 @@ class AmBIENCeDataset:
         self.interior_node_depth = interior_node_depth
         self.period_of_variations = period_of_variations
         self.building_stock_statistics = self.calculate_building_stock_statistics()
+        self.fenestration = pd.read_csv(fenestration_path).set_index(
+            [
+                "REFERENCE BUILDING WINDOW GLAZING TYPE",
+                "REFERENCE BUILDING WINDOW COATED",
+            ]
+        )
 
     def preprocess_data(
         self,
