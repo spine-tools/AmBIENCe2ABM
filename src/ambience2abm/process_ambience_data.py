@@ -492,11 +492,20 @@ class AmBIENCeDataset:
 class ABMDataset:
     """An object class for containing and exporting ArchetypeBuildingModel.jl compatible data."""
 
-    def __init__(self, ambience_data):
+    def __init__(self, ambdata):
         """
         Process the AmBIENCe project raw data for ArchetypeBuildingModel.jl.
 
         Parameters
         ----------
-
+        ambdata : AmBIENCeDataset
+            the pre-processed AmBIENCe dataset used as the basis for the ABM.jl data.
         """
+        self.building_period = ambdata.building_periods()
+        self.building_stock = ambdata.building_stocks
+        self.structure_type = ambdata.structure_types
+        self.building_stock_statistics = ambdata.building_stock_statistics
+        self.structure_statistics = ambdata.calculate_structure_statistics()
+        self.ventilation_and_fenestration_statistics = (
+            ambdata.calculate_ventilation_and_fenestration_statistics()
+        )
