@@ -1,0 +1,27 @@
+[build-system]
+requires = [
+    "hatchling",
+    "pandas",
+    "numpy",
+    "frictionless",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "ambience2abm"
+version = "0.0.1"
+authors = [
+  { name="Topi Rasku", email="topi.rasku@vtt.fi" },
+]
+description = "A Python package for processing AmBIENCe project EU-wide building stock datasets for  ArchetypeBuildingModel.jl."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/spine-tools/AmBIENCe2ABM"
+"Bug Tracker" = "https://github.com/spine-tools/AmBIENCe2ABM/issues"

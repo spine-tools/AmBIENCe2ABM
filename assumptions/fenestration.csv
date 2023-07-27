@@ -1,0 +1,5 @@
+"REFERENCE BUILDING WINDOW GLAZING TYPE","REFERENCE BUILDING WINDOW COATED","normal_solar_energy_transmittance","frame_area_fraction","notes"
+"Single","Non coated",0.85,0.25,"Based on EN ISO 52016-1:2017 Tables B.42 and B.43"
+"Single","Coated",0.80,0.25,"Guesstimated based on EN ISO 52016-1:2017 Tables B.42 and B.43"
+"Double","Non coated",0.75,0.25,"Based on EN ISO 52016-1:2017 Tables B.42 and B.43"
+"Double","Coated",0.67,0.25,"Based on EN ISO 52016-1:2017 Tables B.42 and B.43"

@@ -1,58 +1,299 @@
 {
-    "name": "ambience2abm",
-    "resources": [],
-    "license": "CC-BY-4.0",
-    "datapackage_version": "",
-    "title": "AmBIENCe2ABM",
-    "description": "A datapackage processed from AmBIENCe project EU27 building stock data for use with ArchetypeBuildingModel.jl.",
-    "homepage": "https://github.com/spine-tools/AmBIENCe2ABM.jl",
-    "version": "",
-    "sources": [
-        {
-            "name": "D4.1 Database of grey-box model parameter values for EU building typologies",
-            "web": "https://ambience-project.eu/wp-content/uploads/2022/02/AmBIENCe_D4.1_Database-of-grey-box-model-parameter-values-for-EU-building-typologies-update-version-2-submitted.pdf"
-        },
-        {
-            "name": "Database of grey-box model parameters",
-            "web": "https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx"
-        },
-        {
-            "name": "D4.2 - Buildings Energy Systems Database EU27",
-            "web": "https://ambience-project.eu/wp-content/uploads/2022/06/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx"
-        }
-    ],
-    "keywords": [
-        "European Union",
-        "EU",
-        "Building stock",
-        "Building structures",
-        "Fenestration",
-        "Construction",
-        "AmBIENCe",
-        "mopo",
-        "ABM.jl",
-        "ArchetypeBuildingModel.jl"
-    ],
-    "maintainers": [
-        {
-            "name": "Topi Rasku",
-            "email": "topi.rasku@vtt.fi",
-            "web": "https://cris.vtt.fi/en/persons/topi-rasku"
-        }
-    ],
-    "contributors": [
-        {
-            "name": "Topi Rasku",
-            "email": "topi.rasku@vtt.fi",
-            "web": "https://cris.vtt.fi/en/persons/topi-rasku"
-        }
-    ],
-    "publisher": [
-        {
-            "name": "VTT Technical Research Centre of Finland Ltd",
-            "web": "https://www.vttresearch.com/en"
-        }
-    ],
-    "base": "ambience_data",
-    "dataDependencies": {}
+  "name": "ambience2abm",
+  "title": "AmBIENCe2ABM",
+  "description": "A datapackage processed from AmBIENCe project EU27 building stock data for use with ArchetypeBuildingModel.jl.",
+  "homepage": "https://github.com/spine-tools/AmBIENCe2ABM.jl",
+  "profile": "data-package",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/",
+      "title": "Creative Commons Attribution 4.0"
+    }
+  ],
+  "sources": [
+    {
+      "name": "D4.1 Database of grey-box model parameter values for EU building typologies",
+      "web": "https://ambience-project.eu/wp-content/uploads/2022/02/AmBIENCe_D4.1_Database-of-grey-box-model-parameter-values-for-EU-building-typologies-update-version-2-submitted.pdf"
+    },
+    {
+      "name": "Database of grey-box model parameters",
+      "web": "https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx"
+    },
+    {
+      "name": "D4.2 - Buildings Energy Systems Database EU27",
+      "web": "https://ambience-project.eu/wp-content/uploads/2022/06/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx"
+    }
+  ],
+  "contributors": [
+    {
+      "title": "Topi Rasku",
+      "email": "topi.rasku@vtt.fi",
+      "path": "https://cris.vtt.fi/en/persons/topi-rasku",
+      "role": "author",
+      "organization": "VTT Technical Research Centre of Finland Ltd"
+    }
+  ],
+  "keywords": [
+    "European Union",
+    "EU",
+    "Building stock",
+    "Building structures",
+    "Fenestration",
+    "Construction",
+    "AmBIENCe",
+    "mopo",
+    "ABM.jl",
+    "ArchetypeBuildingModel.jl"
+  ],
+  "version": "0.0.1",
+  "created": "2023-07-27T09:36:25.380009",
+  "resources": [
+    {
+      "name": "building_periods",
+      "type": "table",
+      "path": "data\\building_periods.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_period",
+            "type": "string"
+          },
+          {
+            "name": "period_start",
+            "type": "integer"
+          },
+          {
+            "name": "period_end",
+            "type": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "building_stock",
+      "type": "table",
+      "path": "data\\building_stock.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_stock",
+            "type": "string"
+          },
+          {
+            "name": "building_stock_year",
+            "type": "integer"
+          },
+          {
+            "name": "shapefile_path",
+            "type": "any"
+          },
+          {
+            "name": "raster_weight_path",
+            "type": "any"
+          },
+          {
+            "name": "notes",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "building_stock_statistics",
+      "type": "table",
+      "path": "data\\building_stock_statistics.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_stock",
+            "type": "string"
+          },
+          {
+            "name": "building_type",
+            "type": "string"
+          },
+          {
+            "name": "building_period",
+            "type": "string"
+          },
+          {
+            "name": "location_id",
+            "type": "string"
+          },
+          {
+            "name": "heat_source",
+            "type": "string"
+          },
+          {
+            "name": "number_of_buildings",
+            "type": "number"
+          },
+          {
+            "name": "average_gross_floor_area_m2_per_building",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
+      "name": "structure_statistics",
+      "type": "table",
+      "path": "data\\structure_statistics.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_type",
+            "type": "string"
+          },
+          {
+            "name": "building_period",
+            "type": "string"
+          },
+          {
+            "name": "location_id",
+            "type": "string"
+          },
+          {
+            "name": "structure_type",
+            "type": "string"
+          },
+          {
+            "name": "design_U_value_m2K",
+            "type": "number"
+          },
+          {
+            "name": "effective_thermal_mass_J_m2K",
+            "type": "number"
+          },
+          {
+            "name": "linear_thermal_bridges_W_mK",
+            "type": "number"
+          },
+          {
+            "name": "external_U_value_to_ambient_air_W_m2K",
+            "type": "number"
+          },
+          {
+            "name": "external_U_value_to_ground_W_m2K",
+            "type": "number"
+          },
+          {
+            "name": "internal_U_value_to_structure_W_m2K",
+            "type": "number"
+          },
+          {
+            "name": "total_U_value_W_m2K",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
+      "name": "structure_type",
+      "type": "table",
+      "path": "data\\structure_type.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "structure_type",
+            "type": "string"
+          },
+          {
+            "name": "mapping",
+            "type": "string"
+          },
+          {
+            "name": "interior_resistance_m2K_W",
+            "type": "number"
+          },
+          {
+            "name": "exterior_resistance_m2K_W",
+            "type": "number"
+          },
+          {
+            "name": "linear_thermal_bridge_W_mK",
+            "type": "integer"
+          },
+          {
+            "name": "is_internal",
+            "type": "boolean"
+          },
+          {
+            "name": "ventilation_space_heat_flow_direction",
+            "type": "string"
+          },
+          {
+            "name": "structure_type_notes",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ventilation_and_fenestration_statistics",
+      "type": "table",
+      "path": "data\\ventilation_and_fenestration_statistics.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_type",
+            "type": "string"
+          },
+          {
+            "name": "building_period",
+            "type": "string"
+          },
+          {
+            "name": "location_id",
+            "type": "string"
+          },
+          {
+            "name": "HRU_efficiency",
+            "type": "number"
+          },
+          {
+            "name": "infiltration_rate_1_h",
+            "type": "number"
+          },
+          {
+            "name": "total_normal_solar_energy_transmittance",
+            "type": "number"
+          },
+          {
+            "name": "ventilation_rate_1_h",
+            "type": "number"
+          },
+          {
+            "name": "window_U_value_W_m2K",
+            "type": "number"
+          }
+        ]
+      }
+    }
+  ]
 }
