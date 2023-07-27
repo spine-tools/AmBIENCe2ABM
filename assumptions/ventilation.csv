@@ -1,0 +1,2 @@
+"HRU_efficiency","infiltration_rate_1_h","ventilation_rate_1_h","notes"
+0.0,0.0,0.0,"The AmBIENCe database contains no parameters related to ventilation or infiltration properties of the reference buildings, which is weird considering how large a share ventilation and infiltration can have when it comes to heat losses from buildings. This casts serious doubts on the reliability of the data, if the parameters of the RC-models don't account for ventilation either."
