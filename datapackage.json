@@ -47,7 +47,7 @@
     "ArchetypeBuildingModel.jl"
   ],
   "version": "0.0.1",
-  "created": "2023-07-27T09:36:25.380009",
+  "created": "2023-07-27T12:24:16.580812",
   "resources": [
     {
       "name": "building_periods",
@@ -94,11 +94,11 @@
           },
           {
             "name": "shapefile_path",
-            "type": "any"
+            "type": "string"
           },
           {
             "name": "raster_weight_path",
-            "type": "any"
+            "type": "string"
           },
           {
             "name": "notes",
