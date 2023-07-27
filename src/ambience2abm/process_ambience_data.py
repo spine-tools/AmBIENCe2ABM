@@ -108,6 +108,11 @@ class AmBIENCeDataset:
             left_on="REFERENCE BUILDING CODE",
             right_on="Building typology",
         )
+        # Normalize heating system prevalency to avoid distorting the statistics just to be sure (there was a bug in the raw data).
+        cols = [f"HEATING SYSTEM {i} PREVALENCY ON BUILDING STOCK" for i in (1, 2, 3)]
+        tot = data[cols].sum(axis=1)
+        for c in cols:
+            data[c] = data[c] / tot
         # Create and add `building_period` to avoid dealing with it manually all the time.
         data["building_period"] = data[
             [
