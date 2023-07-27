@@ -4,7 +4,10 @@
 
 import pandas as pd
 import numpy as np
+from . import __version__
 from itertools import product
+from frictionless import Package
+from datetime import datetime
 
 
 class AmBIENCeDataset:
@@ -533,3 +536,70 @@ class ABMDataset:
         self.ventilation_and_fenestration_statistics.to_csv(
             folderpath + "ventilation_and_fenestration_statistics.csv"
         )
+
+    def create_datapackage(self, folderpath="data/"):
+        """
+        Create and infer a DataPackage from exported .csv files.
+
+        Parameters
+        ----------
+        folderpath : str
+            the folder path of the DataPackage contents.
+
+        Returns
+        -------
+        pkg
+            a Package object with contents and metadata.
+        """
+        pkg = Package(folderpath + "*.csv")
+        pkg.infer()
+        pkg.name = "ambience2abm"
+        pkg.licenses = [
+            {
+                "name": "CC-BY-4.0",
+                "path": "https://creativecommons.org/licenses/by/4.0/",
+                "title": "Creative Commons Attribution 4.0",
+            }
+        ]
+        pkg.profile = "data-package"
+        pkg.title = "AmBIENCe2ABM"
+        pkg.description = "A datapackage processed from AmBIENCe project EU27 building stock data for use with ArchetypeBuildingModel.jl."
+        pkg.homepage = "https://github.com/spine-tools/AmBIENCe2ABM.jl"
+        pkg.version = __version__
+        pkg.sources = [
+            {
+                "name": "D4.1 Database of grey-box model parameter values for EU building typologies",
+                "web": "https://ambience-project.eu/wp-content/uploads/2022/02/AmBIENCe_D4.1_Database-of-grey-box-model-parameter-values-for-EU-building-typologies-update-version-2-submitted.pdf",
+            },
+            {
+                "name": "Database of grey-box model parameters",
+                "web": "https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx",
+            },
+            {
+                "name": "D4.2 - Buildings Energy Systems Database EU27",
+                "web": "https://ambience-project.eu/wp-content/uploads/2022/06/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx",
+            },
+        ]
+        pkg.contributors = [
+            {
+                "title": "Topi Rasku",
+                "email": "topi.rasku@vtt.fi",
+                "path": "https://cris.vtt.fi/en/persons/topi-rasku",
+                "role": "author",
+                "organization": "VTT Technical Research Centre of Finland Ltd",
+            }
+        ]
+        pkg.keywords = [
+            "European Union",
+            "EU",
+            "Building stock",
+            "Building structures",
+            "Fenestration",
+            "Construction",
+            "AmBIENCe",
+            "mopo",
+            "ABM.jl",
+            "ArchetypeBuildingModel.jl",
+        ]
+        pkg.created = datetime.today().isoformat()
+        return pkg
