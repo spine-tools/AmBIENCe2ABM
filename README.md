@@ -52,8 +52,13 @@ This module is built on top of the [AmBIENCe project public deliverables](https:
 2. "[Database of grey-box model parameters](https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx)",
 3. "[D4.2 - Buildings Energy Systems Database EU27](https://ambience-project.eu/wp-content/uploads/2022/06/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx)".
 
-Shapefiles for the relevant EU-vountries were obtained from [Natural Earth](https://www.naturalearthdata.com/):
+Shapefiles for the relevant EU-countries were obtained from [Natural Earth](https://www.naturalearthdata.com/):
 4. "[1:10m Cultural Vectors, Admin 0 - Countries without boundary lakes: ne_10m_admin_0_countries_lakes.zip](https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries_lakes.zip)"
+
+Estimated heated gross floor area density raster data obtained from the [Hotmaps project](https://www.hotmaps-project.eu/) outputs:
+> Simon Pezzutto, Stefano Zambotti, Silvia Croce, Pietro Zambelli, Giulia Garegnani, Chiara Scaramuzzino, Ramón Pascual Pascuas, Alyona Zubaryeva, Franziska Haas, Dagmar Exner (EURAC), Andreas Mueller (e-think), Michael Hartner (TUW), Tobias Fleiter, Anna-Lena Klingler, Matthias Ku¨hnbach, Pia Manz, Simon Marwitz, Matthias Rehfeldt, Jan Steinbach, Eftim Popovski (Fraunhofer ISI) Reviewed by Lukas Kranzl, Sara Fritz (TUW). Hotmaps Project, D2.3 WP2 Report – Open Data Set for the EU28, 2018 www.hotmaps-project.eu.
+5.  "[Heated gross floor area density map of residential buildings in EU28 + Switzerland, Norway and Iceland for the year 2015](https://gitlab.com/hotmaps/gfa_res_curr_density)"
+6. Simon Pezzutto, Stefano Zambotti, Silvia Croce, Pietro Zambelli, Giulia Garegnani, Chiara Scaramuzzino, Ramón Pascual Pascuas, Alyona Zubaryeva, Franziska Haas, Dagmar Exner (EURAC), Andreas Mueller (e-think), Michael Hartner (TUW), Tobias Fleiter, Anna-Lena Klingler, Matthias Ku¨hnbach, Pia Manz, Simon Marwitz, Matthias Rehfeldt, Jan Steinbach, Eftim Popovski (Fraunhofer ISI) Reviewed by Lukas Kranzl, Sara Fritz (TUW). Hotmaps Project, D2.3 WP2 Report – Open Data Set for the EU28, 2018 www.hotmaps-project.eu. "[Heated gross floor area density map of non-residential buildings in EU28 + Switzerland, Norway and Iceland for the year 2015](https://gitlab.com/hotmaps/gfa_nonres_curr_density)"
 
 
 ## Acknowledgements
