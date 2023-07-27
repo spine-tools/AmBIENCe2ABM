@@ -6,7 +6,7 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 ## Key contents
 
-1. `abm_data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
+1. `data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
 2. `ambience_data/` contains the raw input data files for the processing.
 3. `assumptions/` contains auxiliary data that needs to be assumed in order to complete the final dataset for ABM.jl.
 4. `src/` contains the Julia source code for the `AmBIENCE2ABM` module.
@@ -15,17 +15,65 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 ## Installation
 
-TODO.
+In order to follow the installation steps below, you need to have the following
+software installed on your computer and in your `PATH`:
+1. [Git](https://www.git-scm.com/)
+2. [Python](https://www.python.org/) *(along with `pip`)*
+
+Since this package is not indexed in online package repositories,
+you need to download or clone this repository on your machine.
+E.g. using Git: 
+```
+git clone https://github.com/spine-tools/AmBIENCe2ABM.git
+```
+Once you have the repository on your computer,
+navigate into this root folder *(the one containing this `README.md`)*.
+Then, open the command line and install this package and its dependencies via
+```
+pip install -e .
+```
+
+### Downloading the required Hotmaps data.
+
+This package relies on heated gross floor area density GIS raster data
+produced in the [Hotmaps project](https://www.hotmaps-project.eu/) *(see the References section below)*.
+You can either download the necessary repositories into this root folder,
+or clone them using Git via:
+```
+git clone https://gitlab.com/hotmaps/gfa_res_curr_density.git
+git clone https://gitlab.com/hotmaps/gfa_nonres_curr_density.git
+```
 
 
 ## Usage
 
-TODO.
+This module produces and contains the processed EU-level building stock data as
+a [Data Package](https://specs.frictionlessdata.io//data-package/).
+For most use cases, I imagine the contents of the `data/` folder and the `datapackage.json` are sufficient.
+
+TODO: Use with [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox).
+
+For mode advanced use of the package,
+the `testscript.ipynb` can perhaps provide some examples as well as a testbed.
+
+
+### Updating the data package
+
+Updating the data package has been automatised via the `update_datapackage.py` python program,
+in case the underlying `ambience_data/`, `assumptions/`, or the keyword arguments are changed.
+The `update_datapackage.py` takes two optional keyword arguments:
+
+1. `--ind 0.1`: Abbreviated from *interior node depth*. Corresponds to The assumed depth of the structural temperature nodes, given as a fraction of the total thermal resistance of the structure from its interior surface up to the middle of its insulation, or its own middle point if no insulation like is assumed for internal structures *(partition walls and separating floors)*.
+2. `--pov 2225140`: Abbreviated from *period of variations*. The assumed period of variations in seconds for the *'EN ISO 13786:2017 Annex C.2.4 Effective thickness method'* for estimating the effective thermal mass of the structures.
+
+Note that the default values for the above parameters are currently based on
+calibrations performed in a [preprint](https://doi.org/10.5281/zenodo.7623739),
+and are subject to change.
 
 
 ## Documentation
 
-TODO.
+Currently this `README.md` is all you've got besides the docstrings in the code.
 
 
 ## License
@@ -38,10 +86,10 @@ The processed data and the resulting included datapackage are licensed under [Cr
 
 ## How to cite
 
-For the moment, this GitHub page is the only way to reference this piece of code, e.g.:
+For the moment, this GitHub page is the only way to reference this repository, e.g.:
 
 ```
-Topi Rasku. 2023. AmBIENCe2ABM.jl: A Julia module for processing AmBIENCe project EU-wide building stock datasets for ArchetypeBuildingModel.jl.. Software. GitHub, https://github.com/spine-tools/AmBIENCe2ABM.
+Topi Rasku. 2023. AmBIENCe2ABM: A Python package for processing AmBIENCe project EU-wide building stock datasets for ArchetypeBuildingModel.jl.. Software. GitHub, https://github.com/spine-tools/AmBIENCe2ABM.
 ```
 
 
