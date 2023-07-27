@@ -1,3 +1,3 @@
 building_stock,building_stock_year,shapefile_path,raster_weight_path,notes
-AmBIENCe_2016_residential,2016,,,"Hotmaps residential data from until 2016 according to their 'D2.3 WP2 Report – Open Data Set for the EU28'. Possible future sub-division of countries will require country-level reformatting."
-AmBIENCe_2016_non-residential,2016,,,"Hotmaps non-residential data from until 2016 according to their 'D2.3 WP2 Report – Open Data Set for the EU28'. Possible future sub-division of countries will require country-level reformatting."
+AmBIENCe_2016_residential,2016,"../natural_earth/eu_countries.shp",,"Hotmaps residential data from until 2016 according to their 'D2.3 WP2 Report – Open Data Set for the EU28'. Possible future sub-division of countries will require country-level reformatting."
+AmBIENCe_2016_non-residential,2016,"../natural_earth/eu_countries.shp",,"Hotmaps non-residential data from until 2016 according to their 'D2.3 WP2 Report – Open Data Set for the EU28'. Possible future sub-division of countries will require country-level reformatting."
