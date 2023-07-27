@@ -3,6 +3,8 @@
 A Python package for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
 [ArchetypeBuildingModel.jl](https://github.com/vttresearch/ArchetypeBuildingModel).
 
+**This package is still a work in progress! First complete version expected sometime in late Summer 2023.**
+
 
 ## Key contents
 
