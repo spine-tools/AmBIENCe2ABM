@@ -8,11 +8,14 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 ## Key contents
 
-1. `data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
-2. `ambience_data/` contains the raw input data files for the processing.
-3. `assumptions/` contains auxiliary data that needs to be assumed in order to complete the final dataset for ABM.jl.
-4. `src/` contains the Julia source code for the `AmBIENCE2ABM` module.
-5. `datapackage.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
+1. `ambience_data/` contains the raw AmBIENCe input data files for the processing.
+2. `assumptions/` contains auxiliary data that needs to be assumed in order to 
+3. `data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
+complete the final dataset for ABM.jl.
+4. `natural_earth/` contains the relevant EU-countries shapefile.
+5. `src/` contains the Julia source code for the `AmBIENCE2ABM` module.
+6. `datapackage.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
+7. `update_datapackage.py` is the main program file for updating
 
 
 ## Installation
@@ -53,10 +56,10 @@ This module produces and contains the processed EU-level building stock data as
 a [Data Package](https://specs.frictionlessdata.io//data-package/).
 For most use cases, I imagine the contents of the `data/` folder and the `datapackage.json` are sufficient.
 
-TODO: Use with [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox).
-
 For mode advanced use of the package,
-the `testscript.ipynb` can perhaps provide some examples as well as a testbed.
+the `testscript.ipynb` can perhaps provide some examples.
+
+TODO: Use with [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox).
 
 
 ### Updating the data package
