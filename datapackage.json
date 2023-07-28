@@ -47,37 +47,12 @@
     "ArchetypeBuildingModel.jl"
   ],
   "version": "0.0.6",
-  "created": "2023-07-28T12:45:47.514620",
+  "created": "2023-07-28T13:03:24.852239",
   "resources": [
     {
       "name": "building_period",
       "type": "table",
       "path": "data\\building_period.csv",
-      "scheme": "file",
-      "format": "csv",
-      "mediatype": "text/csv",
-      "encoding": "utf-8",
-      "schema": {
-        "fields": [
-          {
-            "name": "building_period",
-            "type": "string"
-          },
-          {
-            "name": "period_start",
-            "type": "integer"
-          },
-          {
-            "name": "period_end",
-            "type": "integer"
-          }
-        ]
-      }
-    },
-    {
-      "name": "building_periods",
-      "type": "table",
-      "path": "data\\building_periods.csv",
       "scheme": "file",
       "format": "csv",
       "mediatype": "text/csv",
