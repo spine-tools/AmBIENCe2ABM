@@ -320,7 +320,7 @@ class AmBIENCeDataset:
             ) * 0.5 * material_resistance + self.structure_types.loc[
                 st, "exterior_resistance_m2K_W"
             ]
-            return (1.0 / extR, 0.0, 1.0 / intR, 1.0 / extR + 1.0 / intR)
+            return (1.0 / extR, 0.0, 1.0 / intR, 1.0 / (extR + intR))
         elif st == "base_floor":  # Base floor connects to the ground.
             intR = (
                 self.interior_node_depth
