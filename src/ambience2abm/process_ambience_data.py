@@ -510,7 +510,7 @@ class ABMDataset:
         """
         self.building_period = ambdata.building_periods()
         self.building_stock = ambdata.building_stocks
-        self.structure_type = ambdata.structure_types
+        self.structure_type = ambdata.structure_types.drop(columns=["mapping"])
         self.building_stock_statistics = ambdata.calculate_building_stock_statistics()
         self.structure_statistics = ambdata.calculate_structure_statistics()
         self.ventilation_and_fenestration_statistics = (
@@ -530,7 +530,7 @@ class ABMDataset:
         -------
         a bunch of .csv files as output, but the function returns nothing.
         """
-        self.building_period.to_csv(folderpath + "building_periods.csv")
+        self.building_period.to_csv(folderpath + "building_period.csv")
         self.building_stock.to_csv(folderpath + "building_stock.csv")
         self.structure_type.to_csv(folderpath + "structure_type.csv")
         self.building_stock_statistics.to_csv(
