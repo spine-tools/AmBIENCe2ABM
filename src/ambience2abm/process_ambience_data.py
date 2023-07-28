@@ -68,7 +68,6 @@ class AmBIENCeDataset:
         ).set_index("building_type")
         self.interior_node_depth = interior_node_depth
         self.period_of_variations = period_of_variations
-        self.building_stock_statistics = self.calculate_building_stock_statistics()
         self.fenestration = pd.read_csv(fenestration_path).set_index(
             [
                 "REFERENCE BUILDING WINDOW GLAZING TYPE",
@@ -512,7 +511,7 @@ class ABMDataset:
         self.building_period = ambdata.building_periods()
         self.building_stock = ambdata.building_stocks
         self.structure_type = ambdata.structure_types
-        self.building_stock_statistics = ambdata.building_stock_statistics
+        self.building_stock_statistics = ambdata.calculate_building_stock_statistics()
         self.structure_statistics = ambdata.calculate_structure_statistics()
         self.ventilation_and_fenestration_statistics = (
             ambdata.calculate_ventilation_and_fenestration_statistics()
