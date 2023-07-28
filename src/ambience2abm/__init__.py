@@ -1,8 +1,11 @@
 # __init__.py
 
-import importlib.metadata
+import tomllib
 
-__version__ = importlib.metadata.version("ambience2abm")
+with open("pyproject.toml", "rb") as f:
+    data = tomllib.load(f)
+
+__version__ = data["project"]["version"]
 
 # Main module file, imports the
 
