@@ -8,15 +8,14 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 ## Key contents
 
-1. `ambience_data/` contains the raw AmBIENCe input data files for the processing.
-2. `assumptions/` contains auxiliary data that needs to be assumed in order to 
+1. `data_sources/` contains the raw input data files for the processing.
+2. `data_assumptions/` contains auxiliary data that needs to be assumed in order to process the data.
 3. `data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
 complete the final dataset for ABM.jl.
-4. `natural_earth/` contains the relevant EU-countries shapefile.
-5. `src/` contains the Julia source code for the `AmBIENCE2ABM` module.
-6. `data.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
-7. `import_ambience2abm.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
-8. `update_datapackage.py` is the main program file for updating
+4. `src/` contains the source code for the `AmBIENCE2ABM` module.
+5. `data.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
+6. `import_ambience2abm.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
+7. `update_datapackage.py` is the main program file for updating
 
 
 ## Installation
@@ -72,7 +71,7 @@ the `testscript.ipynb` can perhaps provide some examples.
 ### Updating the data package
 
 Updating the data package has been automatised via the `update_datapackage.py` python program,
-in case the underlying `ambience_data/`, `assumptions/`, or the keyword arguments are changed.
+in case the underlying `data_sources/ambience/`, `data_assumptions/`, or the keyword arguments are changed.
 The `update_datapackage.py` takes two optional keyword arguments:
 
 1. `--ind 0.1`: Abbreviated from *interior node depth*. Corresponds to The assumed depth of the structural temperature nodes, given as a fraction of the total thermal resistance of the structure from its interior surface up to the middle of its insulation, or its own middle point if no insulation like is assumed for internal structures *(partition walls and separating floors)*.
