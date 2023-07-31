@@ -14,8 +14,8 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 complete the final dataset for ABM.jl.
 4. `natural_earth/` contains the relevant EU-countries shapefile.
 5. `src/` contains the Julia source code for the `AmBIENCE2ABM` module.
-6. `datapackage.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
-7. `import_ambience2abm.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for the `datapackage.json`.
+6. `data.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
+7. `import_ambience2abm.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
 8. `update_datapackage.py` is the main program file for updating
 
 
@@ -55,7 +55,7 @@ git clone https://gitlab.com/hotmaps/gfa_nonres_curr_density.git
 
 This module produces and contains the processed EU-level building stock data as
 a [Data Package](https://specs.frictionlessdata.io//data-package/).
-For most use cases, I imagine the contents of the `data/` folder and the `datapackage.json` are sufficient.
+For most use cases, I imagine the contents of the `data/` folder and the `data.json` are sufficient.
 
 The `import_ambience2abm.json` contains the
 [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox)

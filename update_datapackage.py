@@ -38,6 +38,6 @@ abmdata = amb.ABMDataset(
 )
 print("Exporting .csvs...")
 abmdata.export_csvs()
-print("Creating `datapackage.json`...")
-abmdata.create_datapackage().to_json("datapackage.json")
+print("Creating `data.json`...")
+abmdata.create_datapackage().to_json("data.json")
 print("All done!")
