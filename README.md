@@ -5,6 +5,8 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 **This package is still a work in progress! First complete version expected sometime in late Summer 2023.**
 
+**NOTE! The heat source distributions according to the AmBIENCe data seem highly unreliable, use at own risk! Aggregating over the heat source distributions recommended.**
+
 
 ## Key contents
 

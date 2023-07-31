@@ -46,8 +46,8 @@
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "0.1.0",
-  "created": "2023-07-28T13:23:56.322372",
+  "version": "0.2.0",
+  "created": "2023-07-31T15:52:19.306856",
   "resources": [
     {
       "name": "building_period",
