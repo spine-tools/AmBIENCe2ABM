@@ -36,6 +36,7 @@ class ABMDefinitions:
             "structure_type"
         )
         self.building_archetype = self.calculate_building_archetype(ambience)
+        self.building_scope = self.calculate_building_scope(ambience)
 
     def calculate_building_frame_depth(self, df):
         """
@@ -138,6 +139,52 @@ class ABMDefinitions:
                 "wall_area_m2",
                 "window_area_m2",
                 "roof_area_m2",
+            ]
+        ]
+        return df
+
+    def calculate_building_scope(self, ambience):
+        """
+        Calculate the building scopes and parameters
+
+        Parameters
+        ----------
+        ambience : AmBIENCeDataset
+            the perprocessed AmBIENCe data.
+
+        Returns
+        -------
+        df : DataFrame
+            a dataframe with unique building scopes and their parameters.
+        """
+        cols = {
+            "REFERENCE BUILDING COUNTRY CODE": "location_id",
+            "REFERENCE BUILDING USE CODE": "building_type",
+            "building_period": "building_period",
+            "REFERENCE BUILDING CONSTRUCTION YEAR LOW": "scope_period_start_year",
+            "REFERENCE BUILDING CONSTRUCTION YEAR HIGH": "scope_period_end_year",
+        }
+        df = ambience.data.rename(columns=cols)
+        df = df[cols.values()]
+        # Form building scope name
+        df["building_scope"] = [
+            "-".join([r["location_id"], r["building_type"], r["building_period"]])
+            for (i, r) in df.iterrows()
+        ]
+        # Fetch the corresponding building stock
+        df["building_stock"] = [
+            ambience.building_type_mappings.loc[r["building_type"], "building_stock"]
+            for (i, r) in df.iterrows()
+        ]
+        # Reorder columns and set index
+        df = df.set_index("building_scope").drop_duplicates()
+        df = df[
+            [
+                "location_id",
+                "building_type",
+                "building_stock",
+                "scope_period_start_year",
+                "scope_period_end_year",
             ]
         ]
         return df
