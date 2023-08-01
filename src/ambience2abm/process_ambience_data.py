@@ -564,7 +564,7 @@ class ABMDataset:
         """
         pkg = Package(folderpath + "*.csv")
         pkg.infer()
-        pkg.name = "ambience2abm"
+        pkg.name = "ambience2abm_data"
         pkg.licenses = [
             {
                 "name": "CC-BY-4.0",
@@ -573,8 +573,8 @@ class ABMDataset:
             }
         ]
         pkg.profile = "data-package"
-        pkg.title = "AmBIENCe2ABM"
-        pkg.description = "A datapackage processed from AmBIENCe project EU27 building stock data for use with ArchetypeBuildingModel.jl."
+        pkg.title = "AmBIENCe2ABM building stock data"
+        pkg.description = "A building stock data package processed from AmBIENCe project EU27 data for use with ArchetypeBuildingModel.jl."
         pkg.homepage = "https://github.com/spine-tools/AmBIENCe2ABM.jl"
         pkg.version = __version__
         pkg.sources = [
