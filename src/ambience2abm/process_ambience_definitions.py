@@ -213,6 +213,7 @@ class ABMDefinitions:
             for (i, r) in df.iterrows()
         ]
         # Select columns of interest
-        df = df[["building_scope", "heat_source"]]
+        cols = ["building_scope", "heat_source"]
+        df = df[cols].set_index(cols)
         df = df.drop_duplicates()
         return df
