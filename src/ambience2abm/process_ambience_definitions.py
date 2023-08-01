@@ -2,6 +2,7 @@
 
 # Classes and methods for processing AmBIENCe archetype building definitions.
 
+import pandas as pd
 import numpy as np
 
 
@@ -11,7 +12,8 @@ class ABMDefinitions:
     def __init__(
         self,
         ambience,
-        building_fabrics_path="definitions_assumptions/building_fabrics.csv",
+        building_fabrics_path="definitions_assumptions/building_fabrics_and_nodes.csv",
+        building_nodes_path="definitions_assumptions/building_nodes_and_structures.csv",
         room_height_m=2.6,
     ):
         """
@@ -27,6 +29,12 @@ class ABMDefinitions:
             assumed height of rooms/storeys in metres, default based on AmBIENCe `D4.1 Database of grey-box model parameter values for EU building typologies`.
         """
         self.room_height_m = room_height_m
+        self.building_fabrics = pd.read_csv(building_fabrics_path).set_index(
+            "building_node"
+        )
+        self.building_node__structure_type = pd.read_csv(building_nodes_path).set_index(
+            "structure_type"
+        )
         self.building_archetype = self.calculate_building_archetype(ambience)
 
     def calculate_building_frame_depth(self, df):
@@ -49,6 +57,10 @@ class ABMDefinitions:
         df["building_frame_depth_m"] = (
             A_facade / 2 / nh - np.sqrt((A_facade / 2 / nh) ** 2 - 4 * A_floor)
         ) / 2
+        # AmBIENCe assumes a fixed external wall ratio of 1.5 if not computable.
+        df.loc[df["building_frame_depth_m"].isna(), "building_frame_depth_m"] = np.sqrt(
+            A_floor / 1.5
+        )
         return df
 
     def calculate_window_area_to_external_wall_ratio_m2_m2(self, df):
@@ -72,7 +84,7 @@ class ABMDefinitions:
 
     def calculate_building_archetype(self, ambience):
         """
-        Process building archetypes from AmBIENCe data.
+        Calculate building archetype data.
 
         Parameters
         ----------
@@ -82,7 +94,7 @@ class ABMDefinitions:
         Returns
         -------
         df : DataFrame
-            the `building_archetype` and `building_scope` definitions.
+            Preprocessed definitions related data.
         """
         # Renaming columns
         cols = {
@@ -90,8 +102,6 @@ class ABMDefinitions:
             "REFERENCE BUILDING COUNTRY CODE": "location_id",
             "REFERENCE BUILDING USE CODE": "building_type",
             "building_period": "building_period",
-            "REFERENCE BUILDING CONSTRUCTION YEAR LOW": "scope_period_start_year",
-            "REFERENCE BUILDING CONSTRUCTION YEAR HIGH": "scope_period_end_year",
             "NUMBER OF REFERENCE BUILDING STOREYS": "number_of_storeys",
             "REFERENCE BUILDING GROUND FLOOR AREA (m2)": "floor_area_m2",
             "REFERENCE BUILDING WALL AREA (m2)": "wall_area_m2",
@@ -107,11 +117,8 @@ class ABMDefinitions:
             for (i, r) in df.iterrows()
         ]
 
-        # Add `building_stock`.
-        df["building_stock"] = [
-            ambience.building_type_mappings.loc[bt, "building_stock"]
-            for bt in df["building_type"]
-        ]
+        # Add `building_fabrics`.
+        df["building_fabrics"] = self.building_fabrics["building_fabrics"].unique()[0]
 
         # Calculate archetype building properties of interest
         df["room_height_m"] = self.room_height_m
@@ -121,6 +128,8 @@ class ABMDefinitions:
         # Reorder columns
         df = df[
             [
+                "building_scope",
+                "building_fabrics",
                 "building_frame_depth_m",
                 "number_of_storeys",
                 "room_height_m",
@@ -129,12 +138,6 @@ class ABMDefinitions:
                 "wall_area_m2",
                 "window_area_m2",
                 "roof_area_m2",
-                "building_scope",
-                "building_stock",
-                "building_type",
-                "heat_source",
-                "location_id",
-                "scope_period_start_year",
-                "scope_period_end_year",
             ]
         ]
+        return df

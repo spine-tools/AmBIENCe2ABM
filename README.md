@@ -7,6 +7,8 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 **NOTE! The heat source distributions according to the AmBIENCe data seem highly unreliable, use at own risk! Aggregating over the heat source distributions recommended.**
 
+**NOTE! The geometries of some of the reference buildings seem highly unrealistic, especially for Cyprus. High level of aggregation over the building stock recommended.**
+
 
 ## Key contents
 
