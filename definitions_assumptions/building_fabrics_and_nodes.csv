@@ -1,0 +1,4 @@
+building_fabrics,building_node,interior_air_and_furniture_weight
+ZonWallIntB,indoor_air,1
+ZonWallIntB,internal_mass,0
+ZonWallIntB,envelope_mass,0

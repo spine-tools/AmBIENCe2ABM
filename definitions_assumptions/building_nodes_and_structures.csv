@@ -1,0 +1,6 @@
+building_node,structure_type
+interior_mass,partition_wall
+interior_mass,separating_floor
+envelope_mass,roof
+envelope_mass,base_floor
+envelope_mass,external_wall
