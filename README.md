@@ -7,16 +7,22 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 **NOTE! The heat source distributions according to the AmBIENCe data seem highly unreliable, use at own risk! Aggregating over the heat source distributions recommended.**
 
+**NOTE! The geometries of some of the reference buildings seem highly unrealistic, especially for Cyprus. High level of aggregation over the building stock recommended.**
+
 
 ## Key contents
 
-1. `data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
-2. `data_source/` contains the raw input data files for the processing.
-3. `data_assumptions/` contains auxiliary data that needs to be assumed in order to complete the final dataset for ABM.jl.
-4. `src/` contains the source code for the `AmBIENCE2ABM` module.
-5. `datapackage.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
-6. `import_ambience2abm.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for the `datapackage.json`.
-7. `update_datapackage.py` is the main program file for updating
+1. `data/` contains the raw `.csv` files of the processed output building stock [Data Package](https://specs.frictionlessdata.io//data-package/).
+2. `data_assumptions/` contains auxiliary data that needs to be assumed in order to complete the final dataset for ABM.jl.
+3. `data_sources/` contains the raw input data files for the processing.
+4. `definitions` contains the raw `.csv` files for the processed reference building definition [Data Package](https://specs.frictionlessdata.io//data-package/).
+5. `definitions_assumptions` contains auxiliary definitions required to complete the definitions for ABM.jl.
+6. `src/` contains the source code for the `AmBIENCE2ABM` module.
+7. `data.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed building stock data output.
+7. `definitions.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed reference building definitions.
+8. `import_ambience2abm_data.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
+9. `import_ambience2abm_definitions.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `definitions.json`.
+10. `update_datapackage.py` is the main program file for updating the [Data Package](https://specs.frictionlessdata.io//data-package/)s.
 
 
 ## Installation
@@ -43,11 +49,11 @@ pip install -e .
 
 This package relies on heated gross floor area density GIS raster data
 produced in the [Hotmaps project](https://www.hotmaps-project.eu/) *(see the References section below)*.
-You can either download the necessary repositories into this root folder,
+You can either download the necessary repositories under the `data_sources/` folder,
 or clone them using Git via:
 ```
-git clone https://gitlab.com/hotmaps/gfa_res_curr_density.git
-git clone https://gitlab.com/hotmaps/gfa_nonres_curr_density.git
+git clone https://gitlab.com/hotmaps/gfa_res_curr_density.git "data_sources/gfa_res_curr_density/"
+git clone https://gitlab.com/hotmaps/gfa_nonres_curr_density.git "data_sources/gfa_nonres_curr_density/"
 ```
 
 
@@ -55,9 +61,9 @@ git clone https://gitlab.com/hotmaps/gfa_nonres_curr_density.git
 
 This module produces and contains the processed EU-level building stock data as
 a [Data Package](https://specs.frictionlessdata.io//data-package/).
-For most use cases, I imagine the contents of the `data/` folder and the `datapackage.json` are sufficient.
+For most use cases, I imagine the contents of the `data/` folder and the `data.json` are sufficient.
 
-The `import_ambience2abm.json` contains the
+The `import_ambience2abm_data.json` contains the
 [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox)
 importer specification which can be used to import the data into a Spine Datastore.
 Since [ArchetypeBuildingModel.jl](https://github.com/vttresearch/ArchetypeBuildingModel)
@@ -66,7 +72,7 @@ Please refer to the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox
 documentation for how to set up importer specifications.
 
 For mode advanced use of the package,
-the `testscript.ipynb` can perhaps provide some examples.
+the `data_testscript.ipynb` can perhaps provide some examples.
 
 
 ### Updating the data package

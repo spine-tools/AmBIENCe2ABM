@@ -1,7 +1,7 @@
 {
-  "name": "ambience2abm",
-  "title": "AmBIENCe2ABM",
-  "description": "A datapackage processed from AmBIENCe project EU27 building stock data for use with ArchetypeBuildingModel.jl.",
+  "name": "ambience2abm_data",
+  "title": "AmBIENCe2ABM building stock data",
+  "description": "A building stock data package processed from AmBIENCe project EU27 data for use with ArchetypeBuildingModel.jl.",
   "homepage": "https://github.com/spine-tools/AmBIENCe2ABM.jl",
   "profile": "data-package",
   "licenses": [
@@ -46,8 +46,8 @@
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "0.2.0",
-  "created": "2023-07-31T15:52:19.306856",
+  "version": "0.3.0",
+  "created": "2023-08-01T15:15:01.269368",
   "resources": [
     {
       "name": "building_period",

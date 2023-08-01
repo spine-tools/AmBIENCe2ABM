@@ -1,5 +1,5 @@
 {
-    "name": "import_ambience2abm",
+    "name": "import_ambience2abm_data",
     "item_type": "Importer",
     "mapping": {
         "table_mappings": {

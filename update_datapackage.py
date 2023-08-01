@@ -27,17 +27,24 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-## Process data, export .csvs and update the datapackage.
+## Process data, export .csvs and update the datapackages.
 
-print("Processing data...")
-abmdata = amb.ABMDataset(
-    amb.AmBIENCeDataset(
-        interior_node_depth=args.ind,
-        period_of_variations=args.pov,
-    )
+print("Processing raw data...")
+ambience = amb.AmBIENCeDataset(
+    interior_node_depth=args.ind,
+    period_of_variations=args.pov,
 )
-print("Exporting .csvs...")
+print("Processing ABM data...")
+abmdata = amb.ABMDataset(ambience)
+print("Exporting data .csvs...")
 abmdata.export_csvs()
-print("Creating `datapackage.json`...")
-abmdata.create_datapackage().to_json("datapackage.json")
+print("Creating `data.json`...")
+abmdata.create_datapackage().to_json("data.json")
+print("Processing ABM definitions...")
+defs = amb.ABMDefinitions(ambience)
+print("Exporting definition .csvs...")
+defs.export_csvs()
+print("Creating `definitions.json`...")
+defs.create_datapackage().to_json("definitions.json")
+
 print("All done!")
