@@ -37,6 +37,9 @@ class ABMDefinitions:
         )
         self.building_archetype = self.calculate_building_archetype(ambience)
         self.building_scope = self.calculate_building_scope(ambience)
+        self.building_scope__heat_source = self.calculate_building_scope__heat_source(
+            ambience
+        )
 
     def calculate_building_frame_depth(self, df):
         """
@@ -187,4 +190,29 @@ class ABMDefinitions:
                 "scope_period_end_year",
             ]
         ]
+        return df
+
+    def calculate_building_scope__heat_source(self, ambience):
+        """
+        Map heat sources to building scopes.
+
+        Parameters
+        ----------
+        ambience : AmBIENCeDataset
+            pre-processed AmBIENCe data
+
+        Returns
+        -------
+        df : DataFrame
+            a dataframe mapping heat sources to building scopes.
+        """
+        df = ambience.calculate_building_stock_statistics().reset_index()
+        # Form building scope name
+        df["building_scope"] = [
+            "-".join([r["location_id"], r["building_type"], r["building_period"]])
+            for (i, r) in df.iterrows()
+        ]
+        # Select columns of interest
+        df = df[["building_scope", "heat_source"]]
+        df = df.drop_duplicates()
         return df
