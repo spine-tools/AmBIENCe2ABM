@@ -58,8 +58,8 @@ class ABMDefinitions:
         df : DataFrame
             the same dataframe with an added column for the building frame depth.
         """
-        A_facade = df["wall_area_m2"] + df["window_area_m2"]
-        A_floor = df["floor_area_m2"]
+        A_facade = df["reference_wall_area_m2"] + df["reference_window_area_m2"]
+        A_floor = df["reference_floor_area_m2"]
         nh = df["number_of_storeys"] * self.room_height_m
         df["building_frame_depth_m"] = (
             A_facade / 2 / nh - np.sqrt((A_facade / 2 / nh) ** 2 - 4 * A_floor)
@@ -84,9 +84,9 @@ class ABMDefinitions:
         df : DataFrame
             the same dataframe with an added column for the window-to-wall ratio
         """
-        df["window_area_to_external_wall_ratio_m2_m2"] = df["window_area_m2"] / (
-            df["window_area_m2"] + df["wall_area_m2"]
-        )
+        df["window_area_to_external_wall_ratio_m2_m2"] = df[
+            "reference_window_area_m2"
+        ] / (df["reference_window_area_m2"] + df["reference_wall_area_m2"])
         return df
 
     def calculate_building_archetype(self, ambience):
@@ -110,10 +110,10 @@ class ABMDefinitions:
             "REFERENCE BUILDING USE CODE": "building_type",
             "building_period": "building_period",
             "NUMBER OF REFERENCE BUILDING STOREYS": "number_of_storeys",
-            "REFERENCE BUILDING GROUND FLOOR AREA (m2)": "floor_area_m2",
-            "REFERENCE BUILDING WALL AREA (m2)": "wall_area_m2",
-            "REFERENCE BUILDING WINDOW AREA (m2)": "window_area_m2",
-            "REFERENCE BUILDING ROOF AREA (m2)": "roof_area_m2",
+            "REFERENCE BUILDING GROUND FLOOR AREA (m2)": "reference_floor_area_m2",
+            "REFERENCE BUILDING WALL AREA (m2)": "reference_wall_area_m2",
+            "REFERENCE BUILDING WINDOW AREA (m2)": "reference_window_area_m2",
+            "REFERENCE BUILDING ROOF AREA (m2)": "reference_roof_area_m2",
         }
         df = ambience.data.reset_index().rename(columns=cols)
         df = df[cols.values()].set_index("building_archetype")
@@ -141,10 +141,10 @@ class ABMDefinitions:
                 "number_of_storeys",
                 "room_height_m",
                 "window_area_to_external_wall_ratio_m2_m2",
-                "floor_area_m2",
-                "wall_area_m2",
-                "window_area_m2",
-                "roof_area_m2",
+                "reference_floor_area_m2",
+                "reference_wall_area_m2",
+                "reference_window_area_m2",
+                "reference_roof_area_m2",
             ]
         ]
         return df
