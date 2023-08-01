@@ -112,6 +112,13 @@ class AmBIENCeDataset:
         tot = data[cols].sum(axis=1)
         for c in cols:
             data[c] = data[c] / tot
+        # Include new column for heat source, since district heating is not indicated by "FUEL USED"
+        cols1 = [f"HEATING SYSTEM {i} HEAT SOURCE" for i in (1, 2, 3)]
+        cols2 = [f"HEATING SYSTEM {i} FUEL USED" for i in (1, 2, 3)]
+        cols3 = [f"HEATING SYSTEM {i} DIMENSIONS" for i in (1, 2, 3)]
+        for c1, c2, c3 in zip(cols1, cols2, cols3):
+            data[c1] = data[c2]
+            data.loc[data[c3] == "District", c1] = "District"
         # Create and add `building_period` to avoid dealing with it manually all the time.
         data["building_period"] = data[
             [
@@ -185,7 +192,7 @@ class AmBIENCeDataset:
                     r[
                         "REFERENCE BUILDING COUNTRY CODE"
                     ],  # Location ID from country code.
-                    r[" ".join([hs, "FUEL USED"])],  # Heating system fuel from data.
+                    r[" ".join([hs, "HEAT SOURCE"])],  # Heating system fuel from data.
                     r["NUMBER OF REFERENCE BUILDINGS IN THE BUILDING STOCK SEGMENT"]
                     * r[
                         " ".join([hs, "PREVALENCY ON BUILDING STOCK"])

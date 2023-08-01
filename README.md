@@ -5,16 +5,17 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 **This package is still a work in progress! First complete version expected sometime in late Summer 2023.**
 
+**NOTE! The heat source distributions according to the AmBIENCe data seem highly unreliable, use at own risk! Aggregating over the heat source distributions recommended.**
+
 
 ## Key contents
 
-1. `data_sources/` contains the raw input data files for the processing.
-2. `data_assumptions/` contains auxiliary data that needs to be assumed in order to process the data.
-3. `data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
-complete the final dataset for ABM.jl.
+1. `data/` contains the raw `.csv` files of the processed output data contained within the output [Data Package](https://specs.frictionlessdata.io//data-package/).
+2. `data_source/` contains the raw input data files for the processing.
+3. `data_assumptions/` contains auxiliary data that needs to be assumed in order to complete the final dataset for ABM.jl.
 4. `src/` contains the source code for the `AmBIENCE2ABM` module.
-5. `data.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
-6. `import_ambience2abm.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
+5. `datapackage.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed output.
+6. `import_ambience2abm.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for the `datapackage.json`.
 7. `update_datapackage.py` is the main program file for updating
 
 
@@ -71,7 +72,7 @@ the `testscript.ipynb` can perhaps provide some examples.
 ### Updating the data package
 
 Updating the data package has been automatised via the `update_datapackage.py` python program,
-in case the underlying `data_sources/ambience/`, `data_assumptions/`, or the keyword arguments are changed.
+in case the underlying `data_source/`, `data_assumptions/`, or the keyword arguments are changed.
 The `update_datapackage.py` takes two optional keyword arguments:
 
 1. `--ind 0.1`: Abbreviated from *interior node depth*. Corresponds to The assumed depth of the structural temperature nodes, given as a fraction of the total thermal resistance of the structure from its interior surface up to the middle of its insulation, or its own middle point if no insulation like is assumed for internal structures *(partition walls and separating floors)*.
