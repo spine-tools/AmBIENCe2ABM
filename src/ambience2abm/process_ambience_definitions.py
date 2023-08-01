@@ -4,6 +4,9 @@
 
 import pandas as pd
 import numpy as np
+from . import __version__
+from frictionless import Package
+from datetime import datetime
 
 
 class ABMDefinitions:
@@ -217,3 +220,93 @@ class ABMDefinitions:
         df = df[cols].set_index(cols)
         df = df.drop_duplicates()
         return df
+
+    def export_csvs(self, folderpath="definitions/"):
+        """
+        Export the ABMDefinitions contents as .csv files.
+
+        Parameters
+        ----------
+        folderpath : str
+            the folder path where to export the contents.
+
+        Returns
+        -------
+        a bunch of .csv files as output, but the function returns nothing.
+        """
+        self.building_archetype.to_csv(folderpath + "building_archetype.csv")
+        self.building_scope.to_csv(folderpath + "building_scope.csv")
+        self.building_fabrics.to_csv(folderpath + "building_fabrics.csv")
+        self.building_node__structure_type.to_csv(
+            folderpath + "building_node__structure_type.csv"
+        )
+        self.building_scope__heat_source.to_csv(
+            folderpath + "building_scope__heat_source.csv"
+        )
+
+    def create_datapackage(self, folderpath="definitions/"):
+        """
+        Create and infer a DataPackage from exported .csv files.
+
+        Parameters
+        ----------
+        folderpath : str
+            the folder path of the DataPackage contents.
+
+        Returns
+        -------
+        pkg
+            a Package object with contents and metadata.
+        """
+        pkg = Package(folderpath + "*.csv")
+        pkg.infer()
+        pkg.name = "ambience2abm_definitions"
+        pkg.licenses = [
+            {
+                "name": "CC-BY-4.0",
+                "path": "https://creativecommons.org/licenses/by/4.0/",
+                "title": "Creative Commons Attribution 4.0",
+            }
+        ]
+        pkg.profile = "data-package"
+        pkg.title = "AmBIENCe2ABM reference building definitions"
+        pkg.description = "A reference building definition package processed from AmBIENCe project EU27 data for use with ArchetypeBuildingModel.jl."
+        pkg.homepage = "https://github.com/spine-tools/AmBIENCe2ABM.jl"
+        pkg.version = __version__
+        pkg.sources = [
+            {
+                "name": "D4.1 Database of grey-box model parameter values for EU building typologies",
+                "web": "https://ambience-project.eu/wp-content/uploads/2022/02/AmBIENCe_D4.1_Database-of-grey-box-model-parameter-values-for-EU-building-typologies-update-version-2-submitted.pdf",
+            },
+            {
+                "name": "Database of grey-box model parameters",
+                "web": "https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx",
+            },
+            {
+                "name": "D4.2 - Buildings Energy Systems Database EU27",
+                "web": "https://ambience-project.eu/wp-content/uploads/2022/06/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx",
+            },
+        ]
+        pkg.contributors = [
+            {
+                "title": "Topi Rasku",
+                "email": "topi.rasku@vtt.fi",
+                "path": "https://cris.vtt.fi/en/persons/topi-rasku",
+                "role": "author",
+                "organization": "VTT Technical Research Centre of Finland Ltd",
+            }
+        ]
+        pkg.keywords = [
+            "European Union",
+            "EU",
+            "Building stock",
+            "Building structures",
+            "Fenestration",
+            "Construction",
+            "AmBIENCe",
+            "mopo",
+            "ABM.jl",
+            "ArchetypeBuildingModel.jl",
+        ]
+        pkg.created = datetime.today().isoformat()
+        return pkg
