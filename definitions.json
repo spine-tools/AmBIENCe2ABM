@@ -1,0 +1,214 @@
+{
+  "name": "ambience2abm_definitions",
+  "title": "AmBIENCe2ABM reference building definitions",
+  "description": "A reference building definition package processed from AmBIENCe project EU27 data for use with ArchetypeBuildingModel.jl.",
+  "homepage": "https://github.com/spine-tools/AmBIENCe2ABM.jl",
+  "profile": "data-package",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/",
+      "title": "Creative Commons Attribution 4.0"
+    }
+  ],
+  "sources": [
+    {
+      "name": "D4.1 Database of grey-box model parameter values for EU building typologies",
+      "web": "https://ambience-project.eu/wp-content/uploads/2022/02/AmBIENCe_D4.1_Database-of-grey-box-model-parameter-values-for-EU-building-typologies-update-version-2-submitted.pdf"
+    },
+    {
+      "name": "Database of grey-box model parameters",
+      "web": "https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx"
+    },
+    {
+      "name": "D4.2 - Buildings Energy Systems Database EU27",
+      "web": "https://ambience-project.eu/wp-content/uploads/2022/06/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx"
+    }
+  ],
+  "contributors": [
+    {
+      "title": "Topi Rasku",
+      "email": "topi.rasku@vtt.fi",
+      "path": "https://cris.vtt.fi/en/persons/topi-rasku",
+      "role": "author",
+      "organization": "VTT Technical Research Centre of Finland Ltd"
+    }
+  ],
+  "keywords": [
+    "European Union",
+    "EU",
+    "Building stock",
+    "Building structures",
+    "Fenestration",
+    "Construction",
+    "AmBIENCe",
+    "mopo",
+    "ABM.jl",
+    "ArchetypeBuildingModel.jl"
+  ],
+  "version": "0.3.0",
+  "created": "2023-08-01T15:15:01.814264",
+  "resources": [
+    {
+      "name": "building_archetype",
+      "type": "table",
+      "path": "definitions\\building_archetype.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_archetype",
+            "type": "string"
+          },
+          {
+            "name": "building_scope",
+            "type": "string"
+          },
+          {
+            "name": "building_fabrics",
+            "type": "string"
+          },
+          {
+            "name": "building_frame_depth_m",
+            "type": "number"
+          },
+          {
+            "name": "number_of_storeys",
+            "type": "integer"
+          },
+          {
+            "name": "room_height_m",
+            "type": "number"
+          },
+          {
+            "name": "window_area_to_external_wall_ratio_m2_m2",
+            "type": "number"
+          },
+          {
+            "name": "reference_floor_area_m2",
+            "type": "number"
+          },
+          {
+            "name": "reference_wall_area_m2",
+            "type": "number"
+          },
+          {
+            "name": "reference_window_area_m2",
+            "type": "number"
+          },
+          {
+            "name": "reference_roof_area_m2",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
+      "name": "building_fabrics",
+      "type": "table",
+      "path": "definitions\\building_fabrics.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_node",
+            "type": "string"
+          },
+          {
+            "name": "building_fabrics",
+            "type": "string"
+          },
+          {
+            "name": "interior_air_and_furniture_weight",
+            "type": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "building_node__structure_type",
+      "type": "table",
+      "path": "definitions\\building_node__structure_type.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "structure_type",
+            "type": "string"
+          },
+          {
+            "name": "building_node",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "building_scope",
+      "type": "table",
+      "path": "definitions\\building_scope.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_scope",
+            "type": "string"
+          },
+          {
+            "name": "location_id",
+            "type": "string"
+          },
+          {
+            "name": "building_type",
+            "type": "string"
+          },
+          {
+            "name": "building_stock",
+            "type": "string"
+          },
+          {
+            "name": "scope_period_start_year",
+            "type": "integer"
+          },
+          {
+            "name": "scope_period_end_year",
+            "type": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "building_scope__heat_source",
+      "type": "table",
+      "path": "definitions\\building_scope__heat_source.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_scope",
+            "type": "string"
+          },
+          {
+            "name": "heat_source",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
