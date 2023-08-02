@@ -523,6 +523,12 @@ class ABMDataset:
         self.ventilation_and_fenestration_statistics = (
             ambdata.calculate_ventilation_and_fenestration_statistics()
         )
+        self.location_id = (
+            ambdata.data[["REFERENCE BUILDING COUNTRY CODE"]]
+            .rename(columns={"REFERENCE BUILDING COUNTRY CODE": "location_id"})
+            .set_index("location_id")
+            .drop_duplicates()
+        )
 
     def export_csvs(self, folderpath="data/"):
         """
@@ -547,6 +553,7 @@ class ABMDataset:
         self.ventilation_and_fenestration_statistics.to_csv(
             folderpath + "ventilation_and_fenestration_statistics.csv"
         )
+        self.location_id.to_csv(folderpath + "location_id.csv")
 
     def create_datapackage(self, folderpath="data/"):
         """
