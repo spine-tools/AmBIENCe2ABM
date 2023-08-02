@@ -525,9 +525,9 @@ class ABMDataset:
         )
         self.location_id = (
             ambdata.data[["REFERENCE BUILDING COUNTRY CODE"]]
+            .drop_duplicates()
             .rename(columns={"REFERENCE BUILDING COUNTRY CODE": "location_id"})
             .set_index("location_id")
-            .drop_duplicates()
         )
 
     def export_csvs(self, folderpath="data/"):
