@@ -46,8 +46,8 @@
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "0.3.0",
-  "created": "2023-08-01T15:15:01.814264",
+  "version": "0.3.1",
+  "created": "2023-08-02T10:55:50.453281",
   "resources": [
     {
       "name": "building_archetype",
@@ -78,6 +78,14 @@
           {
             "name": "number_of_storeys",
             "type": "integer"
+          },
+          {
+            "name": "weather_start",
+            "type": "date"
+          },
+          {
+            "name": "weather_end",
+            "type": "date"
           },
           {
             "name": "room_height_m",

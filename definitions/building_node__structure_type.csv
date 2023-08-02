@@ -1,6 +1,8 @@
 structure_type,building_node
 partition_wall,interior_mass
+light_partition_wall,interior_mass
 separating_floor,interior_mass
 roof,envelope_mass
 base_floor,envelope_mass
-external_wall,envelope_mass
+exterior_wall,envelope_mass
+light_exterior_wall,envelope_mass

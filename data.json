@@ -46,8 +46,8 @@
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "0.3.0",
-  "created": "2023-08-01T15:15:01.269368",
+  "version": "0.3.1",
+  "created": "2023-08-02T10:55:49.871666",
   "resources": [
     {
       "name": "building_period",
@@ -149,6 +149,23 @@
       }
     },
     {
+      "name": "location_id",
+      "type": "table",
+      "path": "data\\location_id.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "location_id",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "name": "structure_statistics",
       "type": "table",
       "path": "data\\structure_statistics.csv",
@@ -175,7 +192,7 @@
             "type": "string"
           },
           {
-            "name": "design_U_value_m2K",
+            "name": "design_U_value_W_m2K",
             "type": "number"
           },
           {
