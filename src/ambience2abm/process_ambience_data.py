@@ -405,7 +405,7 @@ class AmBIENCeDataset:
                     "building_period",
                     "location_id",
                     "structure_type",
-                    "design_U_value_m2K",
+                    "design_U_value_W_m2K",
                     "effective_thermal_mass_J_m2K",
                     "linear_thermal_bridges_W_mK",
                     "external_U_value_to_ambient_air_W_m2K",
@@ -419,7 +419,7 @@ class AmBIENCeDataset:
             )
             .agg(
                 {
-                    "design_U_value_m2K": "sum",
+                    "design_U_value_W_m2K": "sum",
                     "effective_thermal_mass_J_m2K": "sum",
                     "linear_thermal_bridges_W_mK": "sum",
                     "external_U_value_to_ambient_air_W_m2K": "sum",
