@@ -126,42 +126,6 @@
                             }
                         ]
                     }
-                },
-                {
-                    "location_id": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "header",
-                                "value": 3
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 3
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": "hidden",
-                                "value": "location_id"
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": 3
-                            }
-                        ]
-                    }
                 }
             ],
             "structure_statistics": [
