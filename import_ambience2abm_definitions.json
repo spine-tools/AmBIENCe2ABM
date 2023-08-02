@@ -253,6 +253,7 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
+                                "value": "building_scope",
                                 "skip_columns": [
                                     1,
                                     2,
@@ -311,11 +312,13 @@
                             },
                             {
                                 "map_type": "RelationshipObject",
-                                "position": 0
+                                "position": 0,
+                                "import_objects": true
                             },
                             {
                                 "map_type": "RelationshipObject",
-                                "position": 1
+                                "position": 1,
+                                "import_objects": true
                             },
                             {
                                 "map_type": "RelationshipMetadata",
@@ -349,11 +352,13 @@
                             },
                             {
                                 "map_type": "RelationshipObject",
-                                "position": 0
+                                "position": 0,
+                                "import_objects": true
                             },
                             {
                                 "map_type": "RelationshipObject",
-                                "position": 2
+                                "position": 2,
+                                "import_objects": true
                             },
                             {
                                 "map_type": "RelationshipMetadata",
@@ -387,11 +392,13 @@
                             },
                             {
                                 "map_type": "RelationshipObject",
-                                "position": 0
+                                "position": 0,
+                                "import_objects": true
                             },
                             {
                                 "map_type": "RelationshipObject",
-                                "position": 3
+                                "position": 3,
+                                "import_objects": true
                             },
                             {
                                 "map_type": "RelationshipMetadata",
