@@ -18,6 +18,8 @@ class ABMDefinitions:
         building_fabrics_path="definitions_assumptions/building_fabrics_and_nodes.csv",
         building_nodes_path="definitions_assumptions/building_nodes_and_structures.csv",
         room_height_m=2.6,
+        weather_start="2016-01-01",
+        weather_end="2016-01-02",
     ):
         """
         Process and store AmBIENCe archetype building definitions.
@@ -30,8 +32,14 @@ class ABMDefinitions:
             path to a .csv file containing assumptions regarding the building RC-model structure.
         room_height_m : float
             assumed height of rooms/storeys in metres, default based on AmBIENCe `D4.1 Database of grey-box model parameter values for EU building typologies`.
+        weather_start : datetime-like str
+            Desired `weather_start` parameter for the archetypes, required for ABM.jl.
+        weather_end: datetime_like_str
+            Desired `weather_end` parameter for the archetypes, required for ABM.jl.
         """
         self.room_height_m = room_height_m
+        self.weather_start = weather_start
+        self.weather_end = weather_end
         self.building_fabrics = pd.read_csv(building_fabrics_path).set_index(
             "building_node"
         )
@@ -127,6 +135,10 @@ class ABMDefinitions:
         # Add `building_fabrics`.
         df["building_fabrics"] = self.building_fabrics["building_fabrics"].unique()[0]
 
+        # Add `weather_start` and `weather_end`
+        df["weather_start"] = self.weather_start
+        df["weather_end"] = self.weather_end
+
         # Calculate archetype building properties of interest
         df["room_height_m"] = self.room_height_m
         df = self.calculate_building_frame_depth(df)
@@ -139,6 +151,8 @@ class ABMDefinitions:
                 "building_fabrics",
                 "building_frame_depth_m",
                 "number_of_storeys",
+                "weather_start",
+                "weather_end",
                 "room_height_m",
                 "window_area_to_external_wall_ratio_m2_m2",
                 "reference_floor_area_m2",
