@@ -34,8 +34,7 @@
                             },
                             {
                                 "map_type": "ParameterValue",
-                                "position": "table_name",
-                                "value": "building_stock"
+                                "position": 0
                             }
                         ]
                     }
@@ -319,7 +318,7 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": 0
+                                "value": "building_period"
                             },
                             {
                                 "map_type": "Object",
@@ -343,7 +342,7 @@
                             },
                             {
                                 "map_type": "ParameterValue",
-                                "position": "header"
+                                "position": 0
                             }
                         ]
                     }
