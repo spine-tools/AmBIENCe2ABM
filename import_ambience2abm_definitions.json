@@ -477,8 +477,10 @@
                 "8": "float",
                 "9": "float",
                 "10": "float",
-                "11": "string",
-                "12": "string"
+                "11": "float",
+                "12": "float",
+                "13": "float",
+                "14": "float"
             },
             "building_fabrics": {
                 "0": "string",

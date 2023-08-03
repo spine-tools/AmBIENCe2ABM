@@ -20,6 +20,8 @@ class ABMDefinitions:
         room_height_m=2.6,
         weather_start="2016-01-01",
         weather_end="2016-01-02",
+        partition_wall_length_ratio_to_external_walls_m_m=0.5,
+        window_area_thermal_bridge_surcharge_W_m2K=0.0,
     ):
         """
         Process and store AmBIENCe archetype building definitions.
@@ -34,12 +36,22 @@ class ABMDefinitions:
             assumed height of rooms/storeys in metres, default based on AmBIENCe `D4.1 Database of grey-box model parameter values for EU building typologies`.
         weather_start : datetime-like str
             Desired `weather_start` parameter for the archetypes, required for ABM.jl.
-        weather_end: datetime_like_str
+        weather_end : datetime_like_str
             Desired `weather_end` parameter for the archetypes, required for ABM.jl.
+        partition_wall_length_ratio_to_external_walls_m_m : float
+            Assumed length of partition walls relative to the exterior walls, default 0.5 based on AmBIENCe.
+        window_area_thermal_bridge_surcharge_W_m2K : float
+            Assumed thermal bridging of windows, thermal bridges neglected in AmBIENCe, thus default 0.0?
         """
         self.room_height_m = room_height_m
         self.weather_start = weather_start
         self.weather_end = weather_end
+        self.partition_wall_length_ratio_to_external_walls_m_m = (
+            partition_wall_length_ratio_to_external_walls_m_m
+        )
+        self.window_area_thermal_bridge_surcharge_W_m2K = (
+            window_area_thermal_bridge_surcharge_W_m2K
+        )
         self.building_fabrics = pd.read_csv(building_fabrics_path).set_index(
             "building_node"
         )
@@ -135,9 +147,15 @@ class ABMDefinitions:
         # Add `building_fabrics`.
         df["building_fabrics"] = self.building_fabrics["building_fabrics"].unique()[0]
 
-        # Add `weather_start` and `weather_end`
+        # Add assumed archetype parameters
         df["weather_start"] = self.weather_start
         df["weather_end"] = self.weather_end
+        df[
+            "partition_wall_length_ratio_to_external_walls_m_m"
+        ] = self.partition_wall_length_ratio_to_external_walls_m_m
+        df[
+            "window_area_thermal_bridge_surcharge_W_m2K"
+        ] = self.window_area_thermal_bridge_surcharge_W_m2K
 
         # Calculate archetype building properties of interest
         df["room_height_m"] = self.room_height_m
@@ -155,6 +173,8 @@ class ABMDefinitions:
                 "weather_end",
                 "room_height_m",
                 "window_area_to_external_wall_ratio_m2_m2",
+                "partition_wall_length_ratio_to_external_walls_m_m",
+                "window_area_thermal_bridge_surcharge_W_m2K",
                 "reference_floor_area_m2",
                 "reference_wall_area_m2",
                 "reference_window_area_m2",
