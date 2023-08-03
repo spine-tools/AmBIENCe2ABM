@@ -1,7 +1,7 @@
 building_node,structure_type
-interior_mass,partition_wall
-interior_mass,light_partition_wall
-interior_mass,separating_floor
+internal_mass,partition_wall
+internal_mass,light_partition_wall
+internal_mass,separating_floor
 envelope_mass,roof
 envelope_mass,base_floor
 envelope_mass,exterior_wall
