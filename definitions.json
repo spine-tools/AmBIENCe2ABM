@@ -46,8 +46,8 @@
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "0.3.1",
-  "created": "2023-08-02T10:55:50.453281",
+  "version": "0.3.2",
+  "created": "2023-08-03T08:59:23.359724",
   "resources": [
     {
       "name": "building_archetype",
@@ -93,6 +93,14 @@
           },
           {
             "name": "window_area_to_external_wall_ratio_m2_m2",
+            "type": "number"
+          },
+          {
+            "name": "partition_wall_length_ratio_to_external_walls_m_m",
+            "type": "number"
+          },
+          {
+            "name": "window_area_thermal_bridge_surcharge_W_m2K",
             "type": "number"
           },
           {
