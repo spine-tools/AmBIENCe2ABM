@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ambience2abm"
-version = "0.3.3"
+version = "0.3.4"
 authors = [
   { name="Topi Rasku", email="topi.rasku@vtt.fi" },
 ]
