@@ -56,6 +56,23 @@ git clone https://gitlab.com/hotmaps/gfa_res_curr_density.git "data_sources/gfa_
 git clone https://gitlab.com/hotmaps/gfa_nonres_curr_density.git "data_sources/gfa_nonres_curr_density/"
 ```
 
+#### Reprojecting Hotmaps data.
+
+The Hotmaps heated floor area raster data uses EPSG:3035 for its coordinate
+reference system, while PyPSA/atlite and ERA5 mainly work using EPSG:4326.
+Thus, one needs to reproject the raster data to the desired CRS.
+This can be done e.g. using [rasterio](https://github.com/rasterio/rasterio) `rio warp`.
+
+Rasterio can be installed simply via
+```
+pip install rasterio
+```
+after which, the `rio warp` command line program can be used to reproject the raster data:
+```
+rio warp gfa_res_curr_density.tif gfa_res_curr_density_epsg4326.tif --dst-crs EPSG:4326
+```
+Note that since the raster datasets are quite large, this can take several minutes.
+
 
 ## Usage
 
