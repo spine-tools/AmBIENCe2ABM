@@ -46,6 +46,16 @@ Then, open the command line and install this package and its dependencies via
 pip install -e .
 ```
 
+### Manually downloading the required AmBIENCe project data.
+
+Due to yet unclear licensing of the AmBIENCe project deliverables,
+the required input data files aren't included in this repository.
+However, they can be downloaded under `data_sources/ambience/`
+from the links provided in the References section below.
+
+**NOTE! These aren't necessary if you're only interested in using the provided Data Packages, but are necessary if you want to update the datapackage after some changes.**
+
+
 ### Downloading and reprojecting the required Hotmaps data.
 
 This package relies on heated gross floor area density GIS raster data
@@ -57,14 +67,6 @@ and the [rasterio](https://pypi.org/project/rasterio/)
 *(a python dependency of this module)* are found in your `PATH`.
 
 **NOTE! The EU-wide floor area density raster datasets are around ~200MB each, and the reprojections essentially duplicate the data, resulting in ~800MB of stuff. Downloading can reprojecting the data can take several minutes.**
-
-
-#### Manually downloading the required AmBIENCe project data.
-
-Due to yet unclear licensing of the AmBIENCe project deliverables,
-the required input data files aren't included in this repository.
-However, they can be downloaded under `data_sources/ambience/`
-from the links provided in the References section below.
 
 #### Manually downloading the required Hotmaps data.
 
