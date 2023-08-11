@@ -3,7 +3,7 @@
 A Python package for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
 [ArchetypeBuildingModel.jl](https://github.com/vttresearch/ArchetypeBuildingModel).
 
-**This package is still a work in progress! First complete version expected sometime in late Summer 2023.**
+**NOTE! The AmBIENCe project deliverables used as raw data for this tool are not included under `data_sources/ambience/` because their licensing is yet unclear. Please refer to the References section for where to find the required raw data deliverables.**
 
 **NOTE! The heat source distributions according to the AmBIENCe data seem highly unreliable, use at own risk! Aggregating over the heat source distributions recommended.**
 
@@ -19,10 +19,11 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 5. `definitions_assumptions` contains auxiliary definitions required to complete the definitions for ABM.jl.
 6. `src/` contains the source code for the `AmBIENCE2ABM` module.
 7. `data.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed building stock data output.
-7. `definitions.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed reference building definitions.
-8. `import_ambience2abm_data.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
-9. `import_ambience2abm_definitions.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `definitions.json`.
-10. `update_datapackage.py` is the main program file for updating the [Data Package](https://specs.frictionlessdata.io//data-package/)s.
+8. `definitions.json` is the [Data Package](https://specs.frictionlessdata.io//data-package/) definition of the processed reference building definitions.
+9. `download_and_reproject_hotmaps_data.bat` a script for downloading and reprojecting the required Hotmaps data.
+10. `import_ambience2abm_data.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
+11. `import_ambience2abm_definitions.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `definitions.json`.
+12. `update_datapackage.py` is the main program file for updating the [Data Package](https://specs.frictionlessdata.io//data-package/)s.
 
 
 ## Installation
@@ -45,18 +46,36 @@ Then, open the command line and install this package and its dependencies via
 pip install -e .
 ```
 
-### Downloading the required Hotmaps data.
+### Downloading and reprojecting the required Hotmaps data.
 
 This package relies on heated gross floor area density GIS raster data
-produced in the [Hotmaps project](https://www.hotmaps-project.eu/) *(see the References section below)*.
-You can either download the necessary repositories under the `data_sources/` folder,
-or clone them using Git via:
+produced in the [Hotmaps project](https://www.hotmaps-project.eu/)
+*(see the References section below)*.
+The `download_and_reproject_hotmaps_data.bat` script should automatically
+clone and reproject the required data, as long as [Git](https://www.git-scm.com/)
+and the [rasterio](https://pypi.org/project/rasterio/)
+*(a python dependency of this module)* are found in your `PATH`.
+
+**NOTE! The EU-wide floor area density raster datasets are around ~200MB each, and the reprojections essentially duplicate the data, resulting in ~800MB of stuff. Downloading can reprojecting the data can take several minutes.**
+
+
+#### Manually downloading the required AmBIENCe project data.
+
+Due to yet unclear licensing of the AmBIENCe project deliverables,
+the required input data files aren't included in this repository.
+However, they can be downloaded under `data_sources/ambience/`
+from the links provided in the References section below.
+
+#### Manually downloading the required Hotmaps data.
+
+You can either download the necessary repositories manually
+under the `data_sources/` folder, or clone them using Git via:
 ```
 git clone https://gitlab.com/hotmaps/gfa_res_curr_density.git "data_sources/gfa_res_curr_density/"
 git clone https://gitlab.com/hotmaps/gfa_nonres_curr_density.git "data_sources/gfa_nonres_curr_density/"
 ```
 
-#### Reprojecting Hotmaps data.
+#### Manually reprojecting Hotmaps data.
 
 The Hotmaps heated floor area raster data uses EPSG:3035 for its coordinate
 reference system, while PyPSA/atlite and ERA5 mainly work using EPSG:4326.
@@ -71,7 +90,7 @@ after which, the `rio warp` command line program can be used to reproject the ra
 ```
 rio warp gfa_res_curr_density.tif gfa_res_curr_density_epsg4326.tif --dst-crs EPSG:4326
 ```
-Note that since the raster datasets are quite large, this can take several minutes.
+**NOTE! The raster datasets are quite large, and the reprojection can take several minutes.**
 
 
 ## Usage
