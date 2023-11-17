@@ -21,8 +21,8 @@ parser.add_argument(
 parser.add_argument(
     "--pov",
     type=float,
-    default=2225140,
-    help="The assumed period of variations in seconds for the 'EN ISO 13786:2017 Annex C.2.4 Effective thickness method' for calculating the effective thermal mass of the structures. 2225140 seconds by default.",
+    default=1209600,
+    help="The assumed period of variations in seconds for the 'EN ISO 13786:2017 Annex C.2.4 Effective thickness method' for calculating the effective thermal mass of the structures. 1209600 seconds by default.",
 )
 args = parser.parse_args()
 

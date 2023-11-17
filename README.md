@@ -66,7 +66,7 @@ clone and reproject the required data, as long as [Git](https://www.git-scm.com/
 and the [rasterio](https://pypi.org/project/rasterio/)
 *(a python dependency of this module)* are found in your `PATH`.
 
-**NOTE! The EU-wide floor area density raster datasets are around ~200MB each, and the reprojections essentially duplicate the data, resulting in ~800MB of stuff. Downloading can reprojecting the data can take several minutes.**
+**NOTE! The EU-wide floor area density raster datasets are around ~200MB each, and the reprojections essentially duplicate the data, resulting in ~800MB of stuff. Downloading and reprojecting the data can take several minutes.**
 
 #### Manually downloading the required Hotmaps data.
 
@@ -116,11 +116,11 @@ the `data_testscript.ipynb` can perhaps provide some examples.
 ### Updating the data package
 
 Updating the data package has been automatised via the `update_datapackage.py` python program,
-in case the underlying `data_source/`, `data_assumptions/`, or the keyword arguments are changed.
+in case the underlying `data_sources/`, `data_assumptions/`, or the keyword arguments are changed.
 The `update_datapackage.py` takes two optional keyword arguments:
 
 1. `--ind 0.1`: Abbreviated from *interior node depth*. Corresponds to The assumed depth of the structural temperature nodes, given as a fraction of the total thermal resistance of the structure from its interior surface up to the middle of its insulation, or its own middle point if no insulation like is assumed for internal structures *(partition walls and separating floors)*.
-2. `--pov 2225140`: Abbreviated from *period of variations*. The assumed period of variations in seconds for the *'EN ISO 13786:2017 Annex C.2.4 Effective thickness method'* for estimating the effective thermal mass of the structures.
+2. `--pov 1209600`: Abbreviated from *period of variations*. The assumed period of variations in seconds for the *'EN ISO 13786:2017 Annex C.2.4 Effective thickness method'* for estimating the effective thermal mass of the structures.
 
 Note that the default values for the above parameters are currently based on
 calibrations performed in a [preprint](https://doi.org/10.5281/zenodo.7623739),

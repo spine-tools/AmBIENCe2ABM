@@ -23,7 +23,7 @@ class AmBIENCeDataset:
         fenestration_path="data_assumptions/fenestration.csv",
         ventilation_path="data_assumptions/ventilation.csv",
         interior_node_depth=0.1,
-        period_of_variations=2225140,
+        period_of_variations=1209600,
         heatsys_skiprows=[0],
     ):
         """
