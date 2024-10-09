@@ -3,11 +3,21 @@
 A Python package for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
 [ArchetypeBuildingModel.jl](https://github.com/vttresearch/ArchetypeBuildingModel).
 
-**NOTE! The AmBIENCe project deliverables used as raw data for this tool are not included under `data_sources/ambience/` because their licensing is yet unclear. Please refer to the References section for where to find the required raw data deliverables.**
+>[!NOTE]
+>The AmBIENCe project deliverables used as raw data for this tool are not included under `data_sources/ambience/` because their licensing is yet unclear.
+>Please refer to the References section for where to find the required raw data deliverables.
 
-**NOTE! The heat source distributions according to the AmBIENCe data seem highly unreliable, use at own risk! Aggregating over the heat source distributions recommended.**
+>[!WARNING]
+>The heat source distributions according to the AmBIENCe data seem highly unreliable, use at own risk!
+>Aggregating over the heat source distributions recommended.
 
-**NOTE! The geometries of some of the reference buildings seem highly unrealistic, especially for Cyprus. High level of aggregation over the building stock recommended.**
+>[!WARNING]
+>The geometries of some of the reference buildings seem highly unrealistic, especially for Cyprus.
+>High level of aggregation over the building stock recommended.
+
+>[!CAUTION]
+>The AmBIENCe dataset contains no parameters for ventilation and infiltration, which can account for 50+% of building heat losses.
+>This needs to be corrected one way or another when this dataset is used.
 
 
 ## Key contents
@@ -95,7 +105,7 @@ rio warp gfa_res_curr_density.tif gfa_res_curr_density_epsg4326.tif --dst-crs EP
 **NOTE! The raster datasets are quite large, and the reprojection can take several minutes.**
 
 
-## Usage
+## Use
 
 This module produces and contains the processed EU-level building stock data as
 a [Data Package](https://specs.frictionlessdata.io//data-package/).
@@ -122,9 +132,8 @@ The `update_datapackage.py` takes two optional keyword arguments:
 1. `--ind 0.1`: Abbreviated from *interior node depth*. Corresponds to The assumed depth of the structural temperature nodes, given as a fraction of the total thermal resistance of the structure from its interior surface up to the middle of its insulation, or its own middle point if no insulation like is assumed for internal structures *(partition walls and separating floors)*.
 2. `--pov 1209600`: Abbreviated from *period of variations*. The assumed period of variations in seconds for the *'EN ISO 13786:2017 Annex C.2.4 Effective thickness method'* for estimating the effective thermal mass of the structures.
 
-Note that the default values for the above parameters are currently based on
-calibrations performed in a [preprint](https://doi.org/10.5281/zenodo.7623739),
-and are subject to change.
+The default values for the above parameters are based on calibrations
+performed in [this publication](https://doi.org/10.3390/buildings14061614).
 
 
 ## Documentation
@@ -145,7 +154,7 @@ The processed data and the resulting included datapackage are licensed under [Cr
 For the moment, this GitHub page is the only way to reference this repository, e.g.:
 
 ```
-Topi Rasku. 2023. AmBIENCe2ABM: A Python package for processing AmBIENCe project EU-wide building stock datasets for ArchetypeBuildingModel.jl.. Software. GitHub, https://github.com/spine-tools/AmBIENCe2ABM.
+Topi Rasku. 2023. AmBIENCe2ABM: A Python package for processing AmBIENCe project EU-wide building stock datasets for ArchetypeBuildingModel.jl. Software. GitHub, https://github.com/spine-tools/AmBIENCe2ABM.
 ```
 
 
