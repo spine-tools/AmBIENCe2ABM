@@ -530,6 +530,93 @@ class ABMDataset:
             .set_index("location_id")
         )
 
+    def extrapolate(
+        self,
+        mappings={"SE": ("NO", 0.52), "IE": ("UK", 13.26), "DE": ("CH", 0.10)},
+        tag="ext",
+    ):
+        """
+        Extrapolate ABMDataset for new countries.
+
+        Essentially copies, renames, and scales data based on existing values for new countries.
+        The `mappings` maps existing countries to new countries, along with a scaling factor
+        for the `number_of_buildings` parameter in the `building_stock_statistics`.
+        All other parameters are preserved from the origin country data.
+
+        This method doesn't return anything, but instead modifies:
+            self.building_stock
+            self.building_stock_statistics
+            self.structure_statistics
+            self.ventilation_and_fenestration_statistics
+            self.location_id
+
+        Parameters
+        ----------
+        mappings : dictionary
+            Maps data to be cloned from key to value, along with a scaling coefficient for `number_of_buildings`. Default scaling coefficients are based on UN 2024 World Population Prospects.
+        tag : str
+            A string added to the newly created `building_stock`s to distinguish synthetic data.
+        """
+        # Prep statistics lists
+        bss_list = [self.building_stock_statistics.reset_index()]
+        ss_list = [self.structure_statistics.reset_index()]
+        vafs_list = [self.ventilation_and_fenestration_statistics.reset_index()]
+        for c1, (c2, coeff) in mappings.items():
+            # Duplicate building stock statistics according to the replacement mappings
+            bss = self.building_stock_statistics.reset_index()
+            bss = bss.loc[bss.location_id == c1]
+            bss.location_id = bss.location_id.replace(c1, c2)  # Rename country
+            bss.building_stock = bss.building_stock + "_" + tag  # Distinguish
+            bss.number_of_buildings = bss.number_of_buildings * coeff
+            bss_list.append(bss)
+            # Duplicate structure statistics according to replacement mappings
+            ss = self.structure_statistics.reset_index()
+            ss = ss.loc[ss.location_id == c1]
+            ss.location_id = ss.location_id.replace(c1, c2)
+            ss_list.append(ss)
+            # Duplicate ventilation and fenestration statistics
+            vafs = self.ventilation_and_fenestration_statistics.reset_index()
+            vafs = vafs.loc[vafs.location_id == c1]
+            vafs.location_id = vafs.location_id.replace(c1, c2)
+            vafs_list.append(vafs)
+        # Concatenate statistics to include extensions
+        self.building_stock_statistics = pd.concat(bss_list).set_index(
+            [
+                "building_stock",
+                "building_type",
+                "building_period",
+                "location_id",
+                "heat_source",
+            ]
+        )
+        self.structure_statistics = pd.concat(ss_list).set_index(
+            [
+                "building_type",
+                "building_period",
+                "location_id",
+                "structure_type",
+            ]
+        )
+        self.ventilation_and_fenestration_statistics = pd.concat(vafs_list).set_index(
+            ["building_type", "building_period", "location_id"]
+        )
+        # Add new building_stocks
+        bs = self.building_stock.reset_index()
+        bs.building_stock = bs.building_stock + "_" + tag
+        self.building_stock = pd.concat(
+            [self.building_stock, bs.set_index("building_stock")]
+        )
+        # Add new location_ids
+        self.location_id = pd.concat(
+            [
+                self.location_id,
+                pd.DataFrame(
+                    pd.Series([c2 for (c1, (c2, val)) in mappings.items()]),
+                    columns=["location_id"],
+                ).set_index("location_id"),
+            ]
+        )
+
     def export_csvs(self, folderpath="data/"):
         """
         Export the ABMDataset contents as .csv files.
