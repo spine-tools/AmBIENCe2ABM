@@ -603,6 +603,7 @@ class ABMDataset:
         # Add new building_stocks
         bs = self.building_stock.reset_index()
         bs.building_stock = bs.building_stock + "_" + tag
+        bs.notes = "Data extrapolated based on AmBIENCe data. See `update_datapackage.py` for the extrapolation settings."
         self.building_stock = pd.concat(
             [self.building_stock, bs.set_index("building_stock")]
         )
