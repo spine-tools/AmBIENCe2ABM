@@ -24,7 +24,19 @@ parser.add_argument(
     default=1209600,
     help="The assumed period of variations in seconds for the 'EN ISO 13786:2017 Annex C.2.4 Effective thickness method' for calculating the effective thermal mass of the structures. 1209600 seconds by default.",
 )
+parser.add_argument(
+    "--extrapolate",
+    type=bool,
+    default=True,
+    help="Trigger extrapolation for countries not in the original data. Customise via `Extrapolation settings` in `update_datapackage.py`.",
+)
 args = parser.parse_args()
+
+
+## Extrapolation settings
+
+extrapolation_mappings = {"SE": ("NO", 0.52), "IE": ("UK", 13.26), "DE": ("CH", 0.10)}
+extrapolation_tag = "ext"
 
 
 ## Process data, export .csvs and update the datapackages.
@@ -36,6 +48,9 @@ ambience = amb.AmBIENCeDataset(
 )
 print("Processing ABM data...")
 abmdata = amb.ABMDataset(ambience)
+if args.extrapolate:
+    print("Extrapolating dataset...")
+    abmdata.extrapolate(mappings=extrapolation_mappings, tag=extrapolation_tag)
 print("Exporting data .csvs...")
 abmdata.export_csvs()
 print("Creating `data.json`...")
