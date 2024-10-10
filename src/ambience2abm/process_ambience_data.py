@@ -630,17 +630,19 @@ class ABMDataset:
         -------
         a bunch of .csv files as output, but the function returns nothing.
         """
-        self.building_period.to_csv(folderpath + "building_period.csv")
-        self.building_stock.to_csv(folderpath + "building_stock.csv")
-        self.structure_type.to_csv(folderpath + "structure_type.csv")
-        self.building_stock_statistics.to_csv(
+        self.building_period.sort_index().to_csv(folderpath + "building_period.csv")
+        self.building_stock.sort_index().to_csv(folderpath + "building_stock.csv")
+        self.structure_type.sort_index().to_csv(folderpath + "structure_type.csv")
+        self.building_stock_statistics.sort_index().to_csv(
             folderpath + "building_stock_statistics.csv"
         )
-        self.structure_statistics.to_csv(folderpath + "structure_statistics.csv")
-        self.ventilation_and_fenestration_statistics.to_csv(
+        self.structure_statistics.sort_index().to_csv(
+            folderpath + "structure_statistics.csv"
+        )
+        self.ventilation_and_fenestration_statistics.sort_index().to_csv(
             folderpath + "ventilation_and_fenestration_statistics.csv"
         )
-        self.location_id.to_csv(folderpath + "location_id.csv")
+        self.location_id.sort_index().to_csv(folderpath + "location_id.csv")
 
     def create_datapackage(self, folderpath="data/"):
         """
