@@ -273,10 +273,10 @@ class ABMDefinitions:
         )
         self.building_scope.sort_index().to_csv(folderpath + "building_scope.csv")
         self.building_fabrics.sort_index().to_csv(folderpath + "building_fabrics.csv")
-        self.building_node__structure_type.to_csv(
+        self.building_node__structure_type.sort_index().to_csv(
             folderpath + "building_node__structure_type.csv"
         )
-        self.building_scope__heat_source.to_csv(
+        self.building_scope__heat_source.sort_index().to_csv(
             folderpath + "building_scope__heat_source.csv"
         )
 
