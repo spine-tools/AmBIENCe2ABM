@@ -150,12 +150,12 @@ class ABMDefinitions:
         # Add assumed archetype parameters
         df["weather_start"] = self.weather_start
         df["weather_end"] = self.weather_end
-        df[
-            "partition_wall_length_ratio_to_external_walls_m_m"
-        ] = self.partition_wall_length_ratio_to_external_walls_m_m
-        df[
-            "window_area_thermal_bridge_surcharge_W_m2K"
-        ] = self.window_area_thermal_bridge_surcharge_W_m2K
+        df["partition_wall_length_ratio_to_external_walls_m_m"] = (
+            self.partition_wall_length_ratio_to_external_walls_m_m
+        )
+        df["window_area_thermal_bridge_surcharge_W_m2K"] = (
+            self.window_area_thermal_bridge_surcharge_W_m2K
+        )
 
         # Calculate archetype building properties of interest
         df["room_height_m"] = self.room_height_m
@@ -257,7 +257,7 @@ class ABMDefinitions:
 
     def export_csvs(self, folderpath="definitions/"):
         """
-        Export the ABMDefinitions contents as .csv files.
+        Sort and export the ABMDefinitions contents as .csv files.
 
         Parameters
         ----------
@@ -268,13 +268,15 @@ class ABMDefinitions:
         -------
         a bunch of .csv files as output, but the function returns nothing.
         """
-        self.building_archetype.to_csv(folderpath + "building_archetype.csv")
-        self.building_scope.to_csv(folderpath + "building_scope.csv")
-        self.building_fabrics.to_csv(folderpath + "building_fabrics.csv")
-        self.building_node__structure_type.to_csv(
+        self.building_archetype.sort_index().to_csv(
+            folderpath + "building_archetype.csv"
+        )
+        self.building_scope.sort_index().to_csv(folderpath + "building_scope.csv")
+        self.building_fabrics.sort_index().to_csv(folderpath + "building_fabrics.csv")
+        self.building_node__structure_type.sort_index().to_csv(
             folderpath + "building_node__structure_type.csv"
         )
-        self.building_scope__heat_source.to_csv(
+        self.building_scope__heat_source.sort_index().to_csv(
             folderpath + "building_scope__heat_source.csv"
         )
 

@@ -17,7 +17,7 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 >[!CAUTION]
 >The AmBIENCe dataset contains no parameters for ventilation and infiltration, which can account for 50+% of building heat losses.
->This needs to be corrected one way or another when this dataset is used.
+>This needs to be corrected one way or another when this dataset is used, e.g. by scaling the final demands to match scenario data.
 
 
 ## Key contents
@@ -131,6 +131,7 @@ The `update_datapackage.py` takes two optional keyword arguments:
 
 1. `--ind 0.1`: Abbreviated from *interior node depth*. Corresponds to The assumed depth of the structural temperature nodes, given as a fraction of the total thermal resistance of the structure from its interior surface up to the middle of its insulation, or its own middle point if no insulation like is assumed for internal structures *(partition walls and separating floors)*.
 2. `--pov 1209600`: Abbreviated from *period of variations*. The assumed period of variations in seconds for the *'EN ISO 13786:2017 Annex C.2.4 Effective thickness method'* for estimating the effective thermal mass of the structures.
+3. `--extrapolate True`: A boolean flag to extrapolate data for new countries. See `update_datapackage.py` for the extrapolation settings.
 
 The default values for the above parameters are based on calibrations
 performed in [this publication](https://doi.org/10.3390/buildings14061614).
