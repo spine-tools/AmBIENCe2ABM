@@ -52,11 +52,6 @@ class AmBIENCeDataset:
         heatsys_skiprows : array
             row indices to skip when reading AmBIENCe heating system data.
         """
-        self.data = self.preprocess_data(
-            building_stock_properties_path,
-            building_stock_heatsys_path,
-            heatsys_skiprows,
-        )
         self.structure_types = pd.read_csv(structure_types_path).set_index(
             "structure_type"
         )
@@ -75,6 +70,11 @@ class AmBIENCeDataset:
             ]
         )
         self.ventilation = pd.read_csv(ventilation_path)
+        self.data = self.preprocess_data(
+            building_stock_properties_path,
+            building_stock_heatsys_path,
+            heatsys_skiprows,
+        )
 
     def preprocess_data(
         self,
@@ -107,6 +107,15 @@ class AmBIENCeDataset:
             left_on="REFERENCE BUILDING CODE",
             right_on="Building typology",
         )
+        # Rename columns for convenience later on
+        data = data.rename(
+            columns={
+                "REFERENCE BUILDING USE CODE": "building_type",
+                "REFERENCE BUILDING COUNTRY CODE": "location_id",
+                "NUMBER OF REFERENCE BUILDINGS IN THE BUILDING STOCK SEGMENT": "number_of_buildings",
+                "REFERENCE BUILDING USEFUL FLOOR AREA (m2)": "average_gross_floor_area_m2_per_building",
+            }
+        )
         # Normalize heating system prevalency to avoid distorting the statistics just to be sure (there was a bug in the raw data).
         cols = [f"HEATING SYSTEM {i} PREVALENCY ON BUILDING STOCK" for i in (1, 2, 3)]
         tot = data[cols].sum(axis=1)
@@ -127,11 +136,11 @@ class AmBIENCeDataset:
             ]
         ].apply(lambda row: "-".join(row.values.astype(str)), axis=1)
         # Calculate structure weights for each row
-        col = "BUILDING STOCK SEGMENT USEFUL FLOOR AREA (m2)"
+        col = "average_gross_floor_area_m2_per_building"
         cols = [
-            "REFERENCE BUILDING USE CODE",
+            "building_type",
             "building_period",
-            "REFERENCE BUILDING COUNTRY CODE",
+            "location_id",
         ]
         data = data.set_index(cols)
         agg_data = data.groupby(cols).agg(
@@ -141,7 +150,73 @@ class AmBIENCeDataset:
         data["material_combination_weight"] = (
             data[col] / data["total_area_over_material_combinations_m2"]
         )
-        return data.reset_index().set_index("REFERENCE BUILDING CODE")
+        # Join building type and shapefile mappings for convenience.
+        data = data.reset_index()
+        data = data.join(self.shapefile_mappings, on="location_id")
+        data = data.join(
+            self.building_type_mappings,
+            on="building_type",
+            rsuffix="_building_type",
+        )
+        # Create `building_stock` label for convenience
+        data["building_stock_year"] = 2016
+        data["building_stock"] = (
+            "AmBIENCe_"
+            + data["building_stock_year"].apply(str)
+            + "_"
+            + data["location_id"]
+            + "_"
+            + data["category"]
+        )
+        return data.set_index("REFERENCE BUILDING CODE")
+
+    def extrapolate(self, mappings={}, tag="", year=2016):
+        """
+        Extrapolate AmBIENCeDataset for new countries.
+
+        Essentially copies, renames, and scales data based on existing values for new countries.
+        The `mappings` maps existing countries to new countries, along with a scaling factor
+        for the `number_of_buildings` parameter in the `building_stock_statistics`.
+        All other parameters are preserved from the origin country data.
+
+        This method doesn't return anything, but instead extends `self.data`.
+
+        Parameters
+        ----------
+        mappings : dictionary
+            Maps data to be cloned from key to value, along with a scaling coefficient for `number_of_buildings`. Default scaling coefficients are based on UN 2024 World Population Prospects.
+        tag : str
+            A string added to the newly created `building_stock`s to distinguish synthetic data.
+        year : int
+            Year for the building stock, 2016 by default from AmBIENCe data.
+        """
+        data_list = [self.data.reset_index()]
+        for c1, (c2, coeff) in mappings.items():
+            df = self.data.reset_index().drop(
+                columns=["shapefile_path", "notes"]
+            )  # Remove shapefile mappings and notes
+            df = df.loc[df.location_id == c1]  # Filter by country 1
+            df["REFERENCE BUILDING CODE"] = df["REFERENCE BUILDING CODE"].str.replace(
+                c1, c2
+            )  # Rename reference building
+            df.location_id = df.location_id.replace(c1, c2)  # Rename country
+            df = df.join(
+                self.shapefile_mappings, on="location_id"
+            )  # Re-join to update shapefile path
+            df.building_stock = (
+                tag
+                + "_"
+                + df.building_stock_year.apply(str)
+                + "_"
+                + df.location_id
+                + "_"
+                + df.category
+            )  # Form new building stock names.
+            df.number_of_buildings = (
+                df.number_of_buildings * coeff
+            )  # Scale number of buildings
+            data_list.append(df)
+        self.data = pd.concat(data_list).set_index("REFERENCE BUILDING CODE")
 
     def building_stocks(self, for_processing=False):
         """
@@ -160,39 +235,19 @@ class AmBIENCeDataset:
         building_stocks_df
             a DataFrame for building_stock_csv export.
         """
-        df = self.data[
-            [
-                "REFERENCE BUILDING COUNTRY CODE",
-                "REFERENCE BUILDING USE CODE",
+        return (
+            self.data[
+                [
+                    "building_stock",
+                    "building_stock_year",
+                    "shapefile_path",
+                    "raster_weight_path",
+                    "notes",
+                ]
             ]
-        ]
-        df = df.join(self.shapefile_mappings, on="REFERENCE BUILDING COUNTRY CODE")
-        df = df.join(
-            self.building_type_mappings,
-            on="REFERENCE BUILDING USE CODE",
-            rsuffix="_bt",
+            .set_index("building_stock")
+            .drop_duplicates()
         )
-        df["building_stock_year"] = 2016
-        df["building_stock"] = (
-            "AmBIENCe_"
-            + df["building_stock_year"].apply(str)
-            + "_"
-            + df["REFERENCE BUILDING COUNTRY CODE"]
-            + "_"
-            + df["category"]
-        )
-        df = df[
-            [
-                "building_stock",
-                "building_stock_year",
-                "shapefile_path",
-                "raster_weight_path",
-                "notes",
-            ]
-        ]
-        if not for_processing:
-            df = df.set_index("building_stock").drop_duplicates()
-        return df
 
     def building_periods(self):
         """
@@ -230,33 +285,25 @@ class AmBIENCeDataset:
         building_stock_statistics_df
             a DataFrame for building_stock_statistics.csv export.
         """
-        # Combine with building stocks
-        data = self.data.join(
-            self.building_stocks(for_processing=True), on="REFERENCE BUILDING CODE"
-        )
         # Form the new dataframe
         bss = pd.DataFrame(  # Form the basic structure.
             [
                 [
                     r["building_stock"],
-                    r[
-                        "REFERENCE BUILDING USE CODE"
-                    ],  # Building type directly from data
-                    r["building_period"],  # Fetch building period.
-                    r[
-                        "REFERENCE BUILDING COUNTRY CODE"
-                    ],  # Location ID from country code.
+                    r["building_type"],
+                    r["building_period"],
+                    r["location_id"],
                     r[" ".join([hs, "HEAT SOURCE"])],  # Heating system fuel from data.
-                    r["NUMBER OF REFERENCE BUILDINGS IN THE BUILDING STOCK SEGMENT"]
+                    r["number_of_buildings"]
                     * r[
                         " ".join([hs, "PREVALENCY ON BUILDING STOCK"])
                     ],  # Multiply number of buildings by heat source prevalency.
                     r[
-                        "REFERENCE BUILDING USEFUL FLOOR AREA (m2)"
+                        "average_gross_floor_area_m2_per_building"
                     ],  # Useful floor area estimated to be roughly equivalent to gross-floor area.
                 ]
                 for ((i, r), hs) in product(
-                    data.iterrows(),
+                    self.data.iterrows(),
                     ["HEATING SYSTEM 1", "HEATING SYSTEM 2", "HEATING SYSTEM 3"],
                 )
             ],
@@ -424,9 +471,9 @@ class AmBIENCeDataset:
             pd.DataFrame(
                 [
                     [
-                        r["REFERENCE BUILDING USE CODE"],
+                        r["building_type"],
                         r["building_period"],
-                        r["REFERENCE BUILDING COUNTRY CODE"],
+                        r["location_id"],
                         st,
                         r["material_combination_weight"]
                         * r[
@@ -501,9 +548,9 @@ class AmBIENCeDataset:
             pd.DataFrame(
                 [
                     [
-                        r["REFERENCE BUILDING USE CODE"],
+                        r["building_type"],
                         r["building_period"],
-                        r["REFERENCE BUILDING COUNTRY CODE"],
+                        r["location_id"],
                         r["material_combination_weight"]
                         * self.ventilation["HRU_efficiency"][0],
                         r["material_combination_weight"]
@@ -578,145 +625,10 @@ class ABMDataset:
             ambdata.calculate_ventilation_and_fenestration_statistics()
         )
         self.location_id = (
-            ambdata.data[["REFERENCE BUILDING COUNTRY CODE"]]
-            .drop_duplicates()
-            .rename(columns={"REFERENCE BUILDING COUNTRY CODE": "location_id"})
-            .set_index("location_id")
+            ambdata.data[["location_id"]].drop_duplicates().set_index("location_id")
         )
         self.shapefile_mappings = ambdata.shapefile_mappings
         self.building_type_mappings = ambdata.building_type_mappings
-
-    def extrapolate(
-        self,
-        mappings={"SE": ("NO", 0.52), "IE": ("UK", 13.26), "DE": ("CH", 0.10)},
-        tag="ext",
-        year=2016,
-    ):
-        """
-        Extrapolate ABMDataset for new countries.
-
-        Essentially copies, renames, and scales data based on existing values for new countries.
-        The `mappings` maps existing countries to new countries, along with a scaling factor
-        for the `number_of_buildings` parameter in the `building_stock_statistics`.
-        All other parameters are preserved from the origin country data.
-
-        This method doesn't return anything, but instead modifies:
-            self.building_stock
-            self.building_stock_statistics
-            self.structure_statistics
-            self.ventilation_and_fenestration_statistics
-            self.location_id
-
-        Parameters
-        ----------
-        mappings : dictionary
-            Maps data to be cloned from key to value, along with a scaling coefficient for `number_of_buildings`. Default scaling coefficients are based on UN 2024 World Population Prospects.
-        tag : str
-            A string added to the newly created `building_stock`s to distinguish synthetic data.
-        year : int
-            Year for the building stock, 2016 by default from AmBIENCe data.
-        """
-        # Prep statistics lists
-        bs_list = [self.building_stock.reset_index()]
-        lid_list = [self.location_id.reset_index()]
-        bss_list = [self.building_stock_statistics.reset_index()]
-        ss_list = [self.structure_statistics.reset_index()]
-        vafs_list = [self.ventilation_and_fenestration_statistics.reset_index()]
-        for c1, (c2, coeff) in mappings.items():
-            # Duplicate building stock statistics according to the replacement mappings
-            bss = self.building_stock_statistics.reset_index()
-            bss = bss.loc[bss.location_id == c1]  # Filter by country 1
-            bss.location_id = bss.location_id.replace(c1, c2)  # Rename country
-            lid_list.append(
-                bss[["location_id"]].drop_duplicates()
-            )  # Extract new location ids.
-            # TODO! Future extensions outside Hotmaps could be implemented here via edits to the building_type and the corresponding mapping?
-            bss = bss.join(
-                self.shapefile_mappings, on="location_id"
-            )  # Fetch shapefile information based on country
-            bss = bss.join(
-                self.building_type_mappings, on="building_type", rsuffix="_bt"
-            )  # Fetch raster information based on building type.
-            # Rewrite extrapolated building stocks
-            bs = bss[
-                [
-                    "shapefile_path",
-                    "raster_weight_path",
-                    "notes",
-                    "location_id",
-                    "category",
-                ]
-            ].copy()
-            bs["building_stock_year"] = year
-            bs["building_stock"] = (
-                tag
-                + "_"
-                + bs["building_stock_year"].apply(str)
-                + "_"
-                + bs["location_id"]
-                + "_"
-                + bs["category"]
-            )
-            bss["building_stock"] = bs["building_stock"]  # Rewrite bss building stock
-            bs_list.append(
-                bs[
-                    [
-                        "building_stock",
-                        "building_stock_year",
-                        "shapefile_path",
-                        "raster_weight_path",
-                        "notes",
-                    ]
-                ].drop_duplicates()
-            )
-            bss.number_of_buildings = (
-                bss.number_of_buildings * coeff
-            )  # Scale the number of buildings
-            bss = bss[
-                [
-                    "building_stock",
-                    "building_type",
-                    "building_period",
-                    "location_id",
-                    "heat_source",
-                    "number_of_buildings",
-                    "average_gross_floor_area_m2_per_building",
-                ]
-            ]  # Only include relevant columns
-            bss_list.append(bss)
-            # Duplicate structure statistics according to replacement mappings
-            ss = self.structure_statistics.reset_index()
-            ss = ss.loc[ss.location_id == c1]
-            ss.location_id = ss.location_id.replace(c1, c2)
-            ss_list.append(ss)
-            # Duplicate ventilation and fenestration statistics
-            vafs = self.ventilation_and_fenestration_statistics.reset_index()
-            vafs = vafs.loc[vafs.location_id == c1]
-            vafs.location_id = vafs.location_id.replace(c1, c2)
-            vafs_list.append(vafs)
-        # Concatenate dataframe lists to include extensions
-        self.building_stock_statistics = pd.concat(bss_list).set_index(
-            [
-                "building_stock",
-                "building_type",
-                "building_period",
-                "location_id",
-                "heat_source",
-            ]
-        )
-        self.structure_statistics = pd.concat(ss_list).set_index(
-            [
-                "building_type",
-                "building_period",
-                "location_id",
-                "structure_type",
-            ]
-        )
-        self.ventilation_and_fenestration_statistics = pd.concat(vafs_list).set_index(
-            ["building_type", "building_period", "location_id"]
-        )
-        self.building_stock = pd.concat(bs_list).set_index("building_stock")
-        self.location_id = pd.concat(lid_list).set_index("location_id")
 
     def export_csvs(self, folderpath="data/"):
         """
