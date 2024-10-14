@@ -583,11 +583,14 @@ class ABMDataset:
             .rename(columns={"REFERENCE BUILDING COUNTRY CODE": "location_id"})
             .set_index("location_id")
         )
+        self.shapefile_mappings = ambdata.shapefile_mappings
+        self.building_type_mappings = ambdata.building_type_mappings
 
     def extrapolate(
         self,
         mappings={"SE": ("NO", 0.52), "IE": ("UK", 13.26), "DE": ("CH", 0.10)},
         tag="ext",
+        year=2016,
     ):
         """
         Extrapolate ABMDataset for new countries.
@@ -610,18 +613,76 @@ class ABMDataset:
             Maps data to be cloned from key to value, along with a scaling coefficient for `number_of_buildings`. Default scaling coefficients are based on UN 2024 World Population Prospects.
         tag : str
             A string added to the newly created `building_stock`s to distinguish synthetic data.
+        year : int
+            Year for the building stock, 2016 by default from AmBIENCe data.
         """
         # Prep statistics lists
+        bs_list = [self.building_stock.reset_index()]
+        lid_list = [self.location_id.reset_index()]
         bss_list = [self.building_stock_statistics.reset_index()]
         ss_list = [self.structure_statistics.reset_index()]
         vafs_list = [self.ventilation_and_fenestration_statistics.reset_index()]
         for c1, (c2, coeff) in mappings.items():
             # Duplicate building stock statistics according to the replacement mappings
             bss = self.building_stock_statistics.reset_index()
-            bss = bss.loc[bss.location_id == c1]
+            bss = bss.loc[bss.location_id == c1]  # Filter by country 1
             bss.location_id = bss.location_id.replace(c1, c2)  # Rename country
-            bss.building_stock = bss.building_stock + "_" + tag  # Distinguish
-            bss.number_of_buildings = bss.number_of_buildings * coeff
+            lid_list.append(
+                bss[["location_id"]].drop_duplicates()
+            )  # Extract new location ids.
+            # TODO! Future extensions outside Hotmaps could be implemented here via edits to the building_type and the corresponding mapping?
+            bss = bss.join(
+                self.shapefile_mappings, on="location_id"
+            )  # Fetch shapefile information based on country
+            bss = bss.join(
+                self.building_type_mappings, on="building_type", rsuffix="_bt"
+            )  # Fetch raster information based on building type.
+            # Rewrite extrapolated building stocks
+            bs = bss[
+                [
+                    "shapefile_path",
+                    "raster_weight_path",
+                    "notes",
+                    "location_id",
+                    "category",
+                ]
+            ].copy()
+            bs["building_stock_year"] = year
+            bs["building_stock"] = (
+                tag
+                + "_"
+                + bs["building_stock_year"].apply(str)
+                + "_"
+                + bs["location_id"]
+                + "_"
+                + bs["category"]
+            )
+            bss["building_stock"] = bs["building_stock"]  # Rewrite bss building stock
+            bs_list.append(
+                bs[
+                    [
+                        "building_stock",
+                        "building_stock_year",
+                        "shapefile_path",
+                        "raster_weight_path",
+                        "notes",
+                    ]
+                ].drop_duplicates()
+            )
+            bss.number_of_buildings = (
+                bss.number_of_buildings * coeff
+            )  # Scale the number of buildings
+            bss = bss[
+                [
+                    "building_stock",
+                    "building_type",
+                    "building_period",
+                    "location_id",
+                    "heat_source",
+                    "number_of_buildings",
+                    "average_gross_floor_area_m2_per_building",
+                ]
+            ]  # Only include relevant columns
             bss_list.append(bss)
             # Duplicate structure statistics according to replacement mappings
             ss = self.structure_statistics.reset_index()
@@ -633,7 +694,7 @@ class ABMDataset:
             vafs = vafs.loc[vafs.location_id == c1]
             vafs.location_id = vafs.location_id.replace(c1, c2)
             vafs_list.append(vafs)
-        # Concatenate statistics to include extensions
+        # Concatenate dataframe lists to include extensions
         self.building_stock_statistics = pd.concat(bss_list).set_index(
             [
                 "building_stock",
@@ -654,23 +715,8 @@ class ABMDataset:
         self.ventilation_and_fenestration_statistics = pd.concat(vafs_list).set_index(
             ["building_type", "building_period", "location_id"]
         )
-        # Add new building_stocks
-        bs = self.building_stock.reset_index()
-        bs.building_stock = bs.building_stock + "_" + tag
-        bs.notes = "Data extrapolated based on AmBIENCe data. See `update_datapackage.py` for the extrapolation settings."
-        self.building_stock = pd.concat(
-            [self.building_stock, bs.set_index("building_stock")]
-        )
-        # Add new location_ids
-        self.location_id = pd.concat(
-            [
-                self.location_id,
-                pd.DataFrame(
-                    pd.Series([c2 for (c1, (c2, val)) in mappings.items()]),
-                    columns=["location_id"],
-                ).set_index("location_id"),
-            ]
-        )
+        self.building_stock = pd.concat(bs_list).set_index("building_stock")
+        self.location_id = pd.concat(lid_list).set_index("location_id")
 
     def export_csvs(self, folderpath="data/"):
         """
