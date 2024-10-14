@@ -7,11 +7,6 @@ as indicated by the master `README.md`.
 See brief explanations of the contents below:
 
 
-## building_stock.csv
-
-TBD
-
-
 ## building_type_mappings.csv
 
 Maps `building_type` to either `residential` or `non-residential`.
@@ -28,6 +23,18 @@ Contains assumed fenestration properties.
 Properties designated based on `REFERENCE BUILDING WINDOW GLAZING TYPE`
 and `REFERENCE BUILDING WINDOW COATED` from the underlying AmBIENCe data,
 using EN ISO 52016-1:2017 Tables B.42 and B.43 for the values.
+
+
+## shapefile_mappings.csv
+
+Maps countries to their corresponding shapefiles.
+
+Also contains notes about the overall data availability per country.
+Essentially, which countries are included in the
+[AmBIENCe](https://ambience-project.eu/),
+[Hotmaps](https://www.hotmaps-project.eu/),
+and [NUTS](https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/territorial-units-statistics)
+sources.
 
 
 ## structure_types.csv

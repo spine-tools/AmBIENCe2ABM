@@ -18,8 +18,8 @@ class AmBIENCeDataset:
         building_stock_properties_path="data_sources/ambience/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx",
         building_stock_heatsys_path="data_sources/ambience/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx",
         structure_types_path="data_assumptions/structure_types.csv",
-        building_stock_path="data_assumptions/building_stock.csv",
         building_type_mappings_path="data_assumptions/building_type_mappings.csv",
+        shapefile_mappings_path="data_assumptions/shapefile_mappings.csv",
         fenestration_path="data_assumptions/fenestration.csv",
         ventilation_path="data_assumptions/ventilation.csv",
         interior_node_depth=0.1,
@@ -37,10 +37,10 @@ class AmBIENCeDataset:
             path to the 'AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx' raw data file.
         structure_types_path : str
             path to the 'structure_types.csv' containing assumptions regarding the properties of different structure types.
-        building_stock_path : str
-            path to the 'building_stock.csv' containing definitions for the required building stock object.
         building_type_mappings_path : str
             path to the `building_type_mappings.csv` containing building type to building stock mappings.
+        shapefile_mappings_path : str
+            path to the `shapefile_mappings.csv` mapping country codes to their corresponding shapefiles.
         fenestration_path : str
             path to the `fenestration.csv` containing assumption regarding fenestration properties.
         ventilation_path : str
@@ -60,12 +60,12 @@ class AmBIENCeDataset:
         self.structure_types = pd.read_csv(structure_types_path).set_index(
             "structure_type"
         )
-        self.building_stocks = pd.read_csv(building_stock_path).set_index(
-            "building_stock"
-        )
         self.building_type_mappings = pd.read_csv(
             building_type_mappings_path
         ).set_index("building_type")
+        self.shapefile_mappings = pd.read_csv(shapefile_mappings_path).set_index(
+            "country"
+        )
         self.interior_node_depth = interior_node_depth
         self.period_of_variations = period_of_variations
         self.fenestration = pd.read_csv(fenestration_path).set_index(
@@ -143,6 +143,57 @@ class AmBIENCeDataset:
         )
         return data.reset_index().set_index("REFERENCE BUILDING CODE")
 
+    def building_stocks(self, for_processing=False):
+        """
+        Process required building stocks from the data.
+
+        Note that this function operates only on the AmBIENCe dataset.
+        Thus, it will not contain data beyond its scope.
+
+        Parameters
+        ----------
+        for_processing=False : boolean
+            Flag to preserve "REFERENCE BUILDING CODE" indexing.
+
+        Returns
+        -------
+        building_stocks_df
+            a DataFrame for building_stock_csv export.
+        """
+        df = self.data[
+            [
+                "REFERENCE BUILDING COUNTRY CODE",
+                "REFERENCE BUILDING USE CODE",
+            ]
+        ]
+        df = df.join(self.shapefile_mappings, on="REFERENCE BUILDING COUNTRY CODE")
+        df = df.join(
+            self.building_type_mappings,
+            on="REFERENCE BUILDING USE CODE",
+            rsuffix="_bt",
+        )
+        df["building_stock_year"] = 2016
+        df["building_stock"] = (
+            "AmBIENCe_"
+            + df["building_stock_year"].apply(str)
+            + "_"
+            + df["REFERENCE BUILDING COUNTRY CODE"]
+            + "_"
+            + df["category"]
+        )
+        df = df[
+            [
+                "building_stock",
+                "building_stock_year",
+                "shapefile_path",
+                "raster_weight_path",
+                "notes",
+            ]
+        ]
+        if not for_processing:
+            df = df.set_index("building_stock").drop_duplicates()
+        return df
+
     def building_periods(self):
         """
         Process the unique building periods from the data.
@@ -179,12 +230,15 @@ class AmBIENCeDataset:
         building_stock_statistics_df
             a DataFrame for building_stock_statistics.csv export.
         """
+        # Combine with building stocks
+        data = self.data.join(
+            self.building_stocks(for_processing=True), on="REFERENCE BUILDING CODE"
+        )
+        # Form the new dataframe
         bss = pd.DataFrame(  # Form the basic structure.
             [
                 [
-                    self.building_type_mappings.loc[
-                        r["REFERENCE BUILDING USE CODE"], "building_stock"
-                    ],  # Building stock from building type mapping
+                    r["building_stock"],
                     r[
                         "REFERENCE BUILDING USE CODE"
                     ],  # Building type directly from data
@@ -202,7 +256,7 @@ class AmBIENCeDataset:
                     ],  # Useful floor area estimated to be roughly equivalent to gross-floor area.
                 ]
                 for ((i, r), hs) in product(
-                    self.data.iterrows(),
+                    data.iterrows(),
                     ["HEATING SYSTEM 1", "HEATING SYSTEM 2", "HEATING SYSTEM 3"],
                 )
             ],
@@ -516,7 +570,7 @@ class ABMDataset:
             the pre-processed AmBIENCe dataset used as the basis for the ABM.jl data.
         """
         self.building_period = ambdata.building_periods()
-        self.building_stock = ambdata.building_stocks
+        self.building_stock = ambdata.building_stocks()
         self.structure_type = ambdata.structure_types.drop(columns=["mapping"])
         self.building_stock_statistics = ambdata.calculate_building_stock_statistics()
         self.structure_statistics = ambdata.calculate_structure_statistics()

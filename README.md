@@ -149,6 +149,9 @@ See `LICENSE` for more information.
 
 The processed data and the resulting included datapackage are licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
 
+The different data sources have different licenses,
+please refer to them individually.
+
 
 ## How to cite
 
