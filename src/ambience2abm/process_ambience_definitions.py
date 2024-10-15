@@ -340,7 +340,8 @@ class ABMDefinitions:
             "Fenestration",
             "Construction",
             "AmBIENCe",
-            "mopo",
+            "Mopo",
+            "Hotmaps",
             "ABM.jl",
             "ArchetypeBuildingModel.jl",
         ]

@@ -717,7 +717,8 @@ class ABMDataset:
             "Fenestration",
             "Construction",
             "AmBIENCe",
-            "mopo",
+            "Hotmaps",
+            "Mopo",
             "ABM.jl",
             "ArchetypeBuildingModel.jl",
         ]
