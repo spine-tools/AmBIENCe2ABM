@@ -22,6 +22,8 @@ class ABMDefinitions:
         weather_end="2016-01-02",
         partition_wall_length_ratio_to_external_walls_m_m=0.5,
         window_area_thermal_bridge_surcharge_W_m2K=0.0,
+        aggregate_building_type=True,
+        aggregate_building_period=True,
     ):
         """
         Process and store AmBIENCe archetype building definitions.
@@ -42,6 +44,10 @@ class ABMDefinitions:
             Assumed length of partition walls relative to the exterior walls, default 0.5 based on AmBIENCe.
         window_area_thermal_bridge_surcharge_W_m2K : float
             Assumed thermal bridging of windows, thermal bridges neglected in AmBIENCe, thus default 0.0?
+        aggregate_building_type : bool
+            Flag to aggregate building types according to "data_assumptions/building_type_mappings.csv".
+        aggregate_building_period : bool
+            Flag to aggregate all periods.
         """
         self.room_height_m = room_height_m
         self.weather_start = weather_start
@@ -58,13 +64,99 @@ class ABMDefinitions:
         self.building_node__structure_type = pd.read_csv(building_nodes_path).set_index(
             "structure_type"
         )
-        self.building_archetype = self.calculate_building_archetype(ambience)
-        self.building_scope = self.calculate_building_scope(ambience)
-        self.building_scope__heat_source = self.calculate_building_scope__heat_source(
-            ambience
+        self.data = self.preprocess_data(
+            ambience,
+            aggregate_building_type,
+            aggregate_building_period,
         )
 
-    def calculate_building_frame_depth(self, df):
+    def preprocess_data(
+        self,
+        ambience,
+        aggregate_building_type,
+        aggregate_building_period,
+    ):
+        """
+        Preprocess AmBIENCe data for archetype building definitions.
+
+        Parameters
+        ----------
+        ambience : AmBIENCeDataset
+            The processed AmBIENCe raw data.
+        aggregate_building_type : bool
+            Flag to aggregate building types according to "data_assumptions/building_type_mappings.csv".
+        aggregate_building_period : bool
+            Flag to aggregate all periods.
+
+        Returns
+        -------
+        df : DataFrame
+            DataFrame containing the preprocessed AmBIENCe data.
+        """
+        # Fetch and rename relevant data from ambience
+        cols = {
+            "building_stock": "building_stock",
+            "location_id": "location_id",
+            "building_type": "building_type",
+            "building_period": "building_period",
+            "number_of_buildings": "number_of_buildings",
+            "average_gross_floor_area_m2_per_building": "average_gross_floor_area_m2_per_building",
+            "category": "category",
+            "NUMBER OF REFERENCE BUILDING STOREYS": "number_of_storeys",
+            "REFERENCE BUILDING GROUND FLOOR AREA (m2)": "reference_floor_area_m2",
+            "REFERENCE BUILDING WALL AREA (m2)": "reference_wall_area_m2",
+            "REFERENCE BUILDING WINDOW AREA (m2)": "reference_window_area_m2",
+            "REFERENCE BUILDING ROOF AREA (m2)": "reference_roof_area_m2",
+            "HEATING SYSTEM 1 HEAT SOURCE": "heat_source_1",
+            "HEATING SYSTEM 2 HEAT SOURCE": "heat_source_2",
+            "HEATING SYSTEM 3 HEAT SOURCE": "heat_source_3",
+            "REFERENCE BUILDING CONSTRUCTION YEAR LOW": "period_low",
+            "REFERENCE BUILDING CONSTRUCTION YEAR HIGH": "period_high",
+        }
+        df = ambience.data[cols.keys()].reset_index()
+        df = df.rename(columns=cols)
+        # Calculate max and min period years
+        agg_df = df.groupby(["location_id"]).agg(
+            min_period_year=("period_low", "min"),
+            max_period_year=("period_high", "max"),
+        )
+        df = df.join(agg_df, on="location_id")
+        # Form scope building type id
+        if aggregate_building_type:
+            df["scope_types"] = df["category"]
+        else:
+            df["scope_types"] = df["building_type"]
+        # Form scope period start and end years
+        if aggregate_building_period:
+            df["scope_period_start_year"] = df["min_period_year"]
+            df["scope_period_end_year"] = df["max_period_year"]
+        else:
+            df["scope_period_start_year"] = df["period_low"]
+            df["scope_period_end_year"] = df["period_high"]
+        # Form `building_scope` names
+        df["building_scope"] = (
+            df["location_id"]
+            + "_"
+            + df["scope_types"]
+            + "_"
+            + df["scope_period_start_year"].apply(str)
+            + "_"
+            + df["scope_period_end_year"].apply(str)
+        )
+        # Calculate reference building weights by `building_scope`
+        df["total_gross_floor_area_m2"] = (
+            df["number_of_buildings"] * df["average_gross_floor_area_m2_per_building"]
+        )
+        agg_df = df.groupby(["building_scope"]).agg(
+            total_gross_floor_area_m2_per_scope=("total_gross_floor_area_m2", "sum")
+        )
+        df = df.join(agg_df, on="building_scope")
+        df["weight_within_scope"] = (
+            df["total_gross_floor_area_m2"] / df["total_gross_floor_area_m2_per_scope"]
+        )
+        return df
+
+    def calculate_building_frame_depth(self, df, rounding=2):
         """
         Calculates the building frame depth in metres based on the given exterior dimensions.
 
@@ -109,44 +201,108 @@ class ABMDefinitions:
         ] / (df["reference_window_area_m2"] + df["reference_wall_area_m2"])
         return df
 
-    def calculate_building_archetype(self, ambience):
+    def building_scope(self):
         """
-        Calculate building archetype data.
+        Gather `building_scope` for .csv export.
+
+        Returns
+        -------
+        df : DataFrame
+            A dataframe with unique building scopes and their parameters.
+        """
+        return (
+            self.data[
+                ["building_scope", "scope_period_start_year", "scope_period_end_year"]
+            ]
+            .drop_duplicates()
+            .set_index("building_scope")
+        )
+
+    def building_scope__building_stock(self):
+        """
+        Gather `building_scope`-`building_stock`-pairs for .csv export.
+
+        Returns
+        -------
+        df : DataFrame
+            A dataframe linking `building_scope`s to their included `building_stock`s.
+        """
+        return (
+            self.data[["building_scope", "building_stock"]]
+            .drop_duplicates()
+            .set_index("building_scope")
+        )
+
+    def building_scope__building_type(self):
+        """
+        Gather `building_scope`-`building_stock`-pairs for .csv export.
+
+        Returns
+        -------
+        df : DataFrame
+            A dataframe linking `building_scope`s to their included `building_types`s.
+        """
+        return (
+            self.data[["building_scope", "building_type"]]
+            .drop_duplciates()
+            .set_index("building_type")
+        )
+
+    def building_scope__heat_source(self, ambience):
+        """
+        Map heat sources to building scopes for .csv export
 
         Parameters
         ----------
         ambience : AmBIENCeDataset
-            the pre-processed AmBIENCe dataset.
+            pre-processed AmBIENCe data
+
+        Returns
+        -------
+        df : DataFrame
+            a dataframe mapping heat sources to building scopes.
+        """
+        cols = ["building_stock", "building_type", "building_period", "location_id"]
+        bss = (
+            ambience.calculate_building_stock_statistics()
+            .reset_index()
+            .set_index(cols)["heat_source"]
+        )
+        df = self.data.set_index(cols)
+        df = df.join(bss).reset_index()
+        return (
+            df[["building_scope", "heat_source"]]
+            .drop_duplicates()
+            .set_index("building_scope")
+        )
+
+    def building_scope__location_id(self):
+        """
+        Map location ids to building scopes for .csv export.
+
+        Returns
+        -------
+        df : DataFrame
+            a dataframe mapping location ids to building scopes.
+        """
+        return (
+            self.data[["building_scope", "location_id"]]
+            .drop_duplicates()
+            .set_index("building_scope")
+        )
+
+    def building_archetype(self):
+        """
+        Compile building archetype data for .csv export.
 
         Returns
         -------
         df : DataFrame
             Preprocessed definitions related data.
         """
-        # Renaming columns
-        cols = {
-            "REFERENCE BUILDING CODE": "building_archetype",
-            "REFERENCE BUILDING COUNTRY CODE": "location_id",
-            "REFERENCE BUILDING USE CODE": "building_type",
-            "building_period": "building_period",
-            "NUMBER OF REFERENCE BUILDING STOREYS": "number_of_storeys",
-            "REFERENCE BUILDING GROUND FLOOR AREA (m2)": "reference_floor_area_m2",
-            "REFERENCE BUILDING WALL AREA (m2)": "reference_wall_area_m2",
-            "REFERENCE BUILDING WINDOW AREA (m2)": "reference_window_area_m2",
-            "REFERENCE BUILDING ROOF AREA (m2)": "reference_roof_area_m2",
-        }
-        df = ambience.data.reset_index().rename(columns=cols)
-        df = df[cols.values()].set_index("building_archetype")
-
-        # Add `building_scope`.
-        df["building_scope"] = [
-            "-".join([r["location_id"], r["building_type"], r["building_period"]])
-            for (i, r) in df.iterrows()
-        ]
-
+        df = self.data.copy()
         # Add `building_fabrics`.
         df["building_fabrics"] = self.building_fabrics["building_fabrics"].unique()[0]
-
         # Add assumed archetype parameters
         df["weather_start"] = self.weather_start
         df["weather_end"] = self.weather_end
@@ -156,14 +312,40 @@ class ABMDefinitions:
         df["window_area_thermal_bridge_surcharge_W_m2K"] = (
             self.window_area_thermal_bridge_surcharge_W_m2K
         )
-
-        # Calculate archetype building properties of interest
         df["room_height_m"] = self.room_height_m
+        # Calculate archetype building properties of interest
         df = self.calculate_building_frame_depth(df)
         df = self.calculate_window_area_to_external_wall_ratio_m2_m2(df)
-
-        # Reorder columns
-        df = df[
+        # Prep weighted properties within scope.
+        cols = [
+            "building_frame_depth_m",
+            "number_of_storeys",
+            "window_area_to_external_wall_ratio_m2_m2",
+            "reference_floor_area_m2",
+            "reference_wall_area_m2",
+            "reference_window_area_m2",
+            "reference_roof_area_m2",
+        ]
+        weighted_df = (
+            df[cols]
+            .apply(lambda col: col * df["weight_within_scope"])
+            .rename(columns={col: "weighted_" + col for col in cols})
+        )
+        df = df.join(weighted_df)
+        # Add `building_archetype` dimension and aggregate over it.
+        df["building_archetype"] = df["building_scope"]
+        agg_df = df.groupby(["building_archetype"]).agg(
+            {"weighted_" + col: ["sum"] for col in cols}
+        )
+        agg_df = agg_df.droplevel(1, axis=1).rename(
+            columns={"weighted_" + col: col for col in cols}
+        )
+        df = df.set_index("building_archetype")
+        agg_df = agg_df.join(df, rsuffix="_old")
+        # Round `number_of_storeys` to the nearest 0.5 to avoid excessive partial storeys.
+        agg_df["number_of_storeys"] = round(agg_df["number_of_storeys"] * 2) / 2
+        # Reorder columns and return
+        return agg_df[
             [
                 "building_scope",
                 "building_fabrics",
@@ -180,80 +362,7 @@ class ABMDefinitions:
                 "reference_window_area_m2",
                 "reference_roof_area_m2",
             ]
-        ]
-        return df
-
-    def calculate_building_scope(self, ambience):
-        """
-        Calculate the building scopes and parameters
-
-        Parameters
-        ----------
-        ambience : AmBIENCeDataset
-            the perprocessed AmBIENCe data.
-
-        Returns
-        -------
-        df : DataFrame
-            a dataframe with unique building scopes and their parameters.
-        """
-        cols = {
-            "REFERENCE BUILDING COUNTRY CODE": "location_id",
-            "REFERENCE BUILDING USE CODE": "building_type",
-            "building_period": "building_period",
-            "REFERENCE BUILDING CONSTRUCTION YEAR LOW": "scope_period_start_year",
-            "REFERENCE BUILDING CONSTRUCTION YEAR HIGH": "scope_period_end_year",
-        }
-        df = ambience.data.rename(columns=cols)
-        df = df[cols.values()]
-        # Form building scope name
-        df["building_scope"] = [
-            "-".join([r["location_id"], r["building_type"], r["building_period"]])
-            for (i, r) in df.iterrows()
-        ]
-        # Fetch the corresponding building stock
-        df["building_stock"] = [
-            ambience.building_type_mappings.loc[r["building_type"], "building_stock"]
-            for (i, r) in df.iterrows()
-        ]
-        # Reorder columns and set index
-        df = df.set_index("building_scope").drop_duplicates()
-        df = df[
-            [
-                "location_id",
-                "building_type",
-                "building_stock",
-                "scope_period_start_year",
-                "scope_period_end_year",
-            ]
-        ]
-        return df
-
-    def calculate_building_scope__heat_source(self, ambience):
-        """
-        Map heat sources to building scopes.
-
-        Parameters
-        ----------
-        ambience : AmBIENCeDataset
-            pre-processed AmBIENCe data
-
-        Returns
-        -------
-        df : DataFrame
-            a dataframe mapping heat sources to building scopes.
-        """
-        df = ambience.calculate_building_stock_statistics().reset_index()
-        # Form building scope name
-        df["building_scope"] = [
-            "-".join([r["location_id"], r["building_type"], r["building_period"]])
-            for (i, r) in df.iterrows()
-        ]
-        # Select columns of interest
-        cols = ["building_scope", "heat_source"]
-        df = df[cols].set_index(cols)
-        df = df.drop_duplicates()
-        return df
+        ].drop_duplicates()
 
     def export_csvs(self, folderpath="definitions/"):
         """
@@ -271,7 +380,7 @@ class ABMDefinitions:
         self.building_archetype.sort_index().to_csv(
             folderpath + "building_archetype.csv"
         )
-        self.building_scope.sort_index().to_csv(folderpath + "building_scope.csv")
+        self.building_scope().sort_index().to_csv(folderpath + "building_scope.csv")
         self.building_fabrics.sort_index().to_csv(folderpath + "building_fabrics.csv")
         self.building_node__structure_type.sort_index().to_csv(
             folderpath + "building_node__structure_type.csv"
