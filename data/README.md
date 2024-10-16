@@ -93,5 +93,5 @@ Essentially tells the `HRU_efficiency` (ventilation heat recovery unit efficienc
 >[!CAUTION]
 >The underlying datasets unfortunately don't contain ventilation-related
 >parameters at all, and are replaced with zeroes.
->In principle, defaults from e.g. [TABULA](https://episcope.eu/welcome/)
->or simular could be used in the future.
+>Crude assumption based on [EPISCOPE-TABULA](https://episcope.eu/welcome/)
+>are used instead.
