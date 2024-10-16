@@ -49,6 +49,7 @@ class ABMDefinitions:
         aggregate_building_period : bool
             Flag to aggregate all periods.
         """
+        self.ambience = ambience
         self.room_height_m = room_height_m
         self.weather_start = weather_start
         self.weather_end = weather_end
@@ -65,14 +66,12 @@ class ABMDefinitions:
             "structure_type"
         )
         self.data = self.preprocess_data(
-            ambience,
             aggregate_building_type,
             aggregate_building_period,
         )
 
     def preprocess_data(
         self,
-        ambience,
         aggregate_building_type,
         aggregate_building_period,
     ):
@@ -81,8 +80,6 @@ class ABMDefinitions:
 
         Parameters
         ----------
-        ambience : AmBIENCeDataset
-            The processed AmBIENCe raw data.
         aggregate_building_type : bool
             Flag to aggregate building types according to "data_assumptions/building_type_mappings.csv".
         aggregate_building_period : bool
@@ -113,7 +110,7 @@ class ABMDefinitions:
             "REFERENCE BUILDING CONSTRUCTION YEAR LOW": "period_low",
             "REFERENCE BUILDING CONSTRUCTION YEAR HIGH": "period_high",
         }
-        df = ambience.data[cols.keys()].reset_index()
+        df = self.ambience.data[cols.keys()].reset_index()
         df = df.rename(columns=cols)
         # Calculate max and min period years
         agg_df = df.groupby(["location_id"]).agg(
@@ -244,18 +241,13 @@ class ABMDefinitions:
         """
         return (
             self.data[["building_scope", "building_type"]]
-            .drop_duplciates()
-            .set_index("building_type")
+            .drop_duplicates()
+            .set_index("building_scope")
         )
 
-    def building_scope__heat_source(self, ambience):
+    def building_scope__heat_source(self):
         """
         Map heat sources to building scopes for .csv export
-
-        Parameters
-        ----------
-        ambience : AmBIENCeDataset
-            pre-processed AmBIENCe data
 
         Returns
         -------
@@ -264,7 +256,7 @@ class ABMDefinitions:
         """
         cols = ["building_stock", "building_type", "building_period", "location_id"]
         bss = (
-            ambience.calculate_building_stock_statistics()
+            self.ambience.calculate_building_stock_statistics()
             .reset_index()
             .set_index(cols)["heat_source"]
         )
@@ -377,16 +369,22 @@ class ABMDefinitions:
         -------
         a bunch of .csv files as output, but the function returns nothing.
         """
-        self.building_archetype.sort_index().to_csv(
+        self.building_archetype().sort_index().to_csv(
             folderpath + "building_archetype.csv"
         )
         self.building_scope().sort_index().to_csv(folderpath + "building_scope.csv")
+        self.building_scope__building_stock().sort_index().to_csv(
+            folderpath + "building_scope__building_stock.csv"
+        )
+        self.building_scope__building_type().sort_index().to_csv(
+            folderpath + "building_scope__building_type.csv"
+        )
+        self.building_scope__heat_source().sort_index().to_csv(
+            folderpath + "building_scope__heat_source.csv"
+        )
         self.building_fabrics.sort_index().to_csv(folderpath + "building_fabrics.csv")
         self.building_node__structure_type.sort_index().to_csv(
             folderpath + "building_node__structure_type.csv"
-        )
-        self.building_scope__heat_source.sort_index().to_csv(
-            folderpath + "building_scope__heat_source.csv"
         )
 
     def create_datapackage(self, folderpath="definitions/"):
