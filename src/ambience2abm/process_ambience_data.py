@@ -535,10 +535,6 @@ class AmBIENCeDataset:
         """
         Process ventilation and fenestration statistics for ArchetypeBuildingModel.jl.
 
-        Note that AmBIENCe data contains no information related to ventilation
-        or infiltration whatsoever, even though they tend to be very significant
-        when it comes to heat losses from buildings.
-
         Returns
         -------
         ventilation_and_fenestration_statistics
