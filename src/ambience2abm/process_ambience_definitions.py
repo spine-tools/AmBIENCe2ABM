@@ -209,23 +209,13 @@ class ABMDefinitions:
         """
         return (
             self.data[
-                ["building_scope", "scope_period_start_year", "scope_period_end_year"]
+                [
+                    "building_scope",
+                    "building_stock",
+                    "scope_period_start_year",
+                    "scope_period_end_year",
+                ]
             ]
-            .drop_duplicates()
-            .set_index("building_scope")
-        )
-
-    def building_scope__building_stock(self):
-        """
-        Gather `building_scope`-`building_stock`-pairs for .csv export.
-
-        Returns
-        -------
-        df : DataFrame
-            A dataframe linking `building_scope`s to their included `building_stock`s.
-        """
-        return (
-            self.data[["building_scope", "building_stock"]]
             .drop_duplicates()
             .set_index("building_scope")
         )
@@ -373,14 +363,14 @@ class ABMDefinitions:
             folderpath + "building_archetype.csv"
         )
         self.building_scope().sort_index().to_csv(folderpath + "building_scope.csv")
-        self.building_scope__building_stock().sort_index().to_csv(
-            folderpath + "building_scope__building_stock.csv"
-        )
         self.building_scope__building_type().sort_index().to_csv(
             folderpath + "building_scope__building_type.csv"
         )
         self.building_scope__heat_source().sort_index().to_csv(
             folderpath + "building_scope__heat_source.csv"
+        )
+        self.building_scope__location_id().sort_index().to_csv(
+            folderpath + "building_scope__location_id.csv"
         )
         self.building_fabrics.sort_index().to_csv(folderpath + "building_fabrics.csv")
         self.building_node__structure_type.sort_index().to_csv(
