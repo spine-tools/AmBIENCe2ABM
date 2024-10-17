@@ -42,12 +42,13 @@
     "Fenestration",
     "Construction",
     "AmBIENCe",
-    "mopo",
+    "Hotmaps",
+    "Mopo",
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "0.6.1",
-  "created": "2024-10-10T12:35:33.313450",
+  "version": "1.0.0",
+  "created": "2024-10-17T15:43:16.216119",
   "resources": [
     {
       "name": "building_period",
