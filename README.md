@@ -34,6 +34,7 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 10. `import_ambience2abm_data.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
 11. `import_ambience2abm_definitions.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `definitions.json`.
 12. `update_datapackage.py` is the main program file for updating the [Data Package](https://specs.frictionlessdata.io//data-package/)s.
+13. `weather_preloader.ipynb` is a jupyter script for pre-downloading weather data.
 
 
 ## Installation
