@@ -30,13 +30,30 @@ parser.add_argument(
     default=True,
     help="Trigger extrapolation for countries not in the original data. Customise via `Extrapolation settings` in `update_datapackage.py`.",
 )
+parser.add_argument(
+    "--aggregate_building_type",
+    type=bool,
+    default=True,
+    help="Flag to aggregate archetype building definitions by building type into residential and nonresidential categories.",
+)
+parser.add_argument(
+    "--aggregate_building_period",
+    type=bool,
+    default=True,
+    help="Flag to aggregate all available building periods into a single archetype.",
+)
 args = parser.parse_args()
 
 
 ## Extrapolation settings
 
-extrapolation_mappings = {"SE": ("NO", 0.52), "IE": ("UK", 13.26), "DE": ("CH", 0.10)}
-extrapolation_tag = "ext"
+extrapolation_mappings = {
+    "SE": ("NO", 0.52),
+    "IE": ("UK", 13.26),
+    "AT": ("CH", 0.97),
+}  # Mapping existing countries to new countries with population-based multipliers.
+extrapolation_tag = "ext"  # `building_stock` field pre-pend for new countries.
+extrapolation_year = 2016  # `building_stock_year` of new countries.
 
 
 ## Process data, export .csvs and update the datapackages.
@@ -46,17 +63,23 @@ ambience = amb.AmBIENCeDataset(
     interior_node_depth=args.ind,
     period_of_variations=args.pov,
 )
-print("Processing ABM data...")
-abmdata = amb.ABMDataset(ambience)
 if args.extrapolate:
     print("Extrapolating dataset...")
-    abmdata.extrapolate(mappings=extrapolation_mappings, tag=extrapolation_tag)
+    ambience.extrapolate(
+        mappings=extrapolation_mappings, tag=extrapolation_tag, year=extrapolation_year
+    )
+print("Processing ABM data...")
+abmdata = amb.ABMDataset(ambience)
 print("Exporting data .csvs...")
 abmdata.export_csvs()
 print("Creating `data.json`...")
 abmdata.create_datapackage().to_json("data.json")
 print("Processing ABM definitions...")
-defs = amb.ABMDefinitions(ambience)
+defs = amb.ABMDefinitions(
+    ambience,
+    aggregate_building_period=args.aggregate_building_period,
+    aggregate_building_type=args.aggregate_building_type,
+)
 print("Exporting definition .csvs...")
 defs.export_csvs()
 print("Creating `definitions.json`...")

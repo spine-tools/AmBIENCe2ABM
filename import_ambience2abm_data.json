@@ -8,16 +8,16 @@
                     "building_stock": {
                         "mapping": [
                             {
-                                "map_type": "ObjectClass",
+                                "map_type": "EntityClass",
                                 "position": "table_name",
-                                "value": 0
+                                "value": "building_stock"
                             },
                             {
-                                "map_type": "Object",
+                                "map_type": "Entity",
                                 "position": 0
                             },
                             {
-                                "map_type": "ObjectMetadata",
+                                "map_type": "EntityMetadata",
                                 "position": "hidden"
                             },
                             {
@@ -45,67 +45,62 @@
                     "building_stock_statistics": {
                         "mapping": [
                             {
-                                "map_type": "RelationshipClass",
+                                "map_type": "EntityClass",
                                 "position": "table_name",
                                 "value": "building_stock_statistics"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 0
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 1
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 2
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 3
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 4
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "Relationship",
+                                "map_type": "Entity",
                                 "position": "hidden",
                                 "value": "relationship"
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 0,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 1,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 2,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 3,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 4,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipMetadata",
+                                "map_type": "EntityMetadata",
                                 "position": "hidden"
                             },
                             {
@@ -133,57 +128,53 @@
                     "structure_statistics": {
                         "mapping": [
                             {
-                                "map_type": "RelationshipClass",
+                                "map_type": "EntityClass",
                                 "position": "table_name",
                                 "value": "structure_statistics"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 0
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 1
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 2
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 3
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "Relationship",
+                                "map_type": "Entity",
                                 "position": "hidden",
                                 "value": "relationship"
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 0,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 1,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 2,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 3,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipMetadata",
+                                "map_type": "EntityMetadata",
                                 "position": "hidden"
                             },
                             {
@@ -211,16 +202,16 @@
                     "structure_type": {
                         "mapping": [
                             {
-                                "map_type": "ObjectClass",
+                                "map_type": "EntityClass",
                                 "position": "table_name",
                                 "value": "structure_type"
                             },
                             {
-                                "map_type": "Object",
+                                "map_type": "Entity",
                                 "position": 0
                             },
                             {
-                                "map_type": "ObjectMetadata",
+                                "map_type": "EntityMetadata",
                                 "position": "hidden"
                             },
                             {
@@ -248,47 +239,44 @@
                     "ventilation_and_fenestration_statistics": {
                         "mapping": [
                             {
-                                "map_type": "RelationshipClass",
+                                "map_type": "EntityClass",
                                 "position": "table_name",
                                 "value": "ventilation_and_fenestration_statistics"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 0
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 1
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "header",
-                                "value": 2
+                                "map_type": "Dimension",
+                                "position": "header"
                             },
                             {
-                                "map_type": "Relationship",
+                                "map_type": "Entity",
                                 "position": "hidden",
                                 "value": "relationship"
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 0,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 1,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Element",
                                 "position": 2,
-                                "import_objects": true
+                                "import_entities": true
                             },
                             {
-                                "map_type": "RelationshipMetadata",
+                                "map_type": "EntityMetadata",
                                 "position": "hidden"
                             },
                             {
@@ -316,16 +304,16 @@
                     "building_period": {
                         "mapping": [
                             {
-                                "map_type": "ObjectClass",
+                                "map_type": "EntityClass",
                                 "position": "table_name",
                                 "value": "building_period"
                             },
                             {
-                                "map_type": "Object",
+                                "map_type": "Entity",
                                 "position": 0
                             },
                             {
-                                "map_type": "ObjectMetadata",
+                                "map_type": "EntityMetadata",
                                 "position": "hidden"
                             },
                             {
@@ -353,15 +341,16 @@
                     "location_id": {
                         "mapping": [
                             {
-                                "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "map_type": "EntityClass",
+                                "position": "table_name",
+                                "value": "location_id"
                             },
                             {
-                                "map_type": "Object",
+                                "map_type": "Entity",
                                 "position": 0
                             },
                             {
-                                "map_type": "ObjectMetadata",
+                                "map_type": "EntityMetadata",
                                 "position": "hidden"
                             },
                             {

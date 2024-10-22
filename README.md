@@ -17,7 +17,7 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 
 >[!CAUTION]
 >The AmBIENCe dataset contains no parameters for ventilation and infiltration, which can account for 50+% of building heat losses.
->This needs to be corrected one way or another when this dataset is used, e.g. by scaling the final demands to match scenario data.
+>Currently, crude assumptions based on the [EPISCOPE-TABULA](https://episcope.eu/welcome/) results are used instead.
 
 
 ## Key contents
@@ -34,6 +34,7 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 10. `import_ambience2abm_data.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `data.json`.
 11. `import_ambience2abm_definitions.json` is the [Spine Toolbox](https://github.com/Spine-tools/Spine-Toolbox) importer specification for `definitions.json`.
 12. `update_datapackage.py` is the main program file for updating the [Data Package](https://specs.frictionlessdata.io//data-package/)s.
+13. `weather_preloader.ipynb` is a jupyter script for pre-downloading weather data.
 
 
 ## Installation
@@ -149,6 +150,9 @@ See `LICENSE` for more information.
 
 The processed data and the resulting included datapackage are licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
 
+The different data sources have different licenses,
+please refer to them individually.
+
 
 ## How to cite
 
@@ -163,8 +167,8 @@ Topi Rasku. 2023. AmBIENCe2ABM: A Python package for processing AmBIENCe project
 
 This module is built on top of the [AmBIENCe project public deliverables](https://ambience-project.eu/deliverables/#public-deliverables) *(license currently unclear, but publicly available through the project website.)*:
 
-1. "[D4.1 Database of grey-box model parameter values for EU building typologies](https://ambience-project.eu/wp-content/uploads/2022/02/AmBIENCe_D4.1_Database-of-grey-box-model-parameter-values-for-EU-building-typologies-update-version-2-submitted.pdf)",
-2. "[Database of grey-box model parameters](https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx)",
+1. "[D4.1 Database of grey-box model parameter values for EU building typologies](https://ambience-project.eu/wp-content/uploads/2022/02/AmBIENCe_D4.1_Database-of-grey-box-model-parameter-values-for-EU-building-typologies-update-version-2-submitted.pdf)".
+2. "[Database of grey-box model parameters](https://ambience-project.eu/wp-content/uploads/2022/03/AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx)".
 3. "[D4.2 - Buildings Energy Systems Database EU27](https://ambience-project.eu/wp-content/uploads/2022/06/AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx)".
 
 Shapefiles for the relevant EU-countries were obtained from [Natural Earth](https://www.naturalearthdata.com/) *(public domain)*:
@@ -176,6 +180,10 @@ Estimated heated gross floor area density raster data obtained from the [Hotmaps
 
 5. "[Heated gross floor area density map of residential buildings in EU28 + Switzerland, Norway and Iceland for the year 2015](https://gitlab.com/hotmaps/gfa_res_curr_density)"
 6. "[Heated gross floor area density map of non-residential buildings in EU28 + Switzerland, Norway and Iceland for the year 2015](https://gitlab.com/hotmaps/gfa_nonres_curr_density)"
+
+Assumed ventilation properties are based on the [results of the TABULA project](https://episcope.eu/communication/download/):
+
+7. "[tabula-values.xlsx](https://episcope.eu/fileadmin/tabula/public/calc/tabula-values.xlsx)", `Tab.BoundaryCond` sheet `n_air_use` column for ventilation rate, `Tab.Const.Infiltration` for infiltration rate. Ventilation heat recovery assumed non-existent.
 
 
 ## Acknowledgements
