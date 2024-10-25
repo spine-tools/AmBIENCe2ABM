@@ -22,6 +22,7 @@ class AmBIENCeDataset:
         shapefile_mappings_path="data_assumptions/shapefile_mappings.csv",
         fenestration_path="data_assumptions/fenestration.csv",
         ventilation_path="data_assumptions/ventilation.csv",
+        building_stock_year=2016,
         interior_node_depth=0.1,
         period_of_variations=1209600,
         heatsys_skiprows=[0],
@@ -45,6 +46,8 @@ class AmBIENCeDataset:
             path to the `fenestration.csv` containing assumption regarding fenestration properties.
         ventilation_path : str
             path to the `ventilation.csv` containing assumptions regarding ventilation properties.
+        building_stock_year : int
+            year the building stock data represents, 2016 by default based on the AmBIENCe data.
         interior_node_depth : float
             assumed depth of the aggregated effective thermal mass within the structures, given as a fraction of the total thermal resistance from the indoor surface to the middle of the thermal insulation.
         period_of_variations : float
@@ -73,6 +76,7 @@ class AmBIENCeDataset:
         self.data = self.preprocess_data(
             building_stock_properties_path,
             building_stock_heatsys_path,
+            building_stock_year,
             heatsys_skiprows,
         )
 
@@ -80,6 +84,7 @@ class AmBIENCeDataset:
         self,
         building_stock_properties_path,
         building_stock_heatsys_path,
+        building_stock_year,
         heatsys_skiprows,
     ):
         """
@@ -91,6 +96,8 @@ class AmBIENCeDataset:
             path to the 'AmBIENCe_Deliverable-4.1_Database-of-greybox-model-parameter-values.xlsx' raw data file.
         building_stock_heatsys_path : str
             path to the 'AmBIENCe-WP4-T4.2-Buildings_Energy_systems_Database_EU271.xlsx' raw data file.
+        building_stock_year : int
+            year the building stock data represents.
         heatsys_skiprows : array
             row indices to skip when reading AmBIENCe heating system data.
 
@@ -159,7 +166,7 @@ class AmBIENCeDataset:
             rsuffix="_building_type",
         )
         # Create `building_stock` label for convenience
-        data["building_stock_year"] = 2016
+        data["building_stock_year"] = building_stock_year
         data["building_stock"] = (
             "AmBIENCe_"
             + data["building_stock_year"].apply(str)
@@ -245,8 +252,8 @@ class AmBIENCeDataset:
                     "notes",
                 ]
             ]
-            .set_index("building_stock")
             .drop_duplicates()
+            .set_index("building_stock")
         )
 
     def building_periods(self):
