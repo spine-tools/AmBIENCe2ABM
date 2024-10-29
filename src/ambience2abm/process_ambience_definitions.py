@@ -20,8 +20,8 @@ class ABMDefinitions:
         loads_mapping_path="definitions_assumptions/country_loads_mapping.csv",
         loads_path="definitions_assumptions/loads_and_set_points.csv",
         room_height_m=2.6,
-        weather_start="2015-01-01",
-        weather_end="2015-01-02",
+        weather_start="2016-01-01",
+        weather_end="2016-01-02",
         partition_wall_length_ratio_to_external_walls_m_m=0.5,
         window_area_thermal_bridge_surcharge_W_m2K=0.1,
         aggregate_building_type=True,
@@ -185,7 +185,7 @@ class ABMDefinitions:
         df = df1.join(df2.set_index("loads"), on="loads")
         # Form the full timezoned loads
         df = self.loads.join(df.set_index("loads")[["timezone"]], on="loads")
-        df["hour"] = (df["hour"] + df["timezone"]) % 24
+        df["hour"] = (df["hour"] - df["timezone"]) % 24
         df["hours"] = (
             "h"
             + df["hour"].apply(str).str.zfill(2)
@@ -198,8 +198,9 @@ class ABMDefinitions:
         )
         # Reorganize
         df = (
-            df.set_index("building_loads")[
+            df[
                 [
+                    "building_loads",
                     "loads",
                     "category",
                     "timezone",
@@ -211,6 +212,8 @@ class ABMDefinitions:
                     "indoor_air_cooling_set_point_override_K",
                 ]
             ]
+            .drop_duplicates()
+            .set_index("building_loads")
             .sort_index()
             .sort_values(by=["loads", "category", "timezone", "hour"])
         )
@@ -418,17 +421,13 @@ class ABMDefinitions:
         df : DataFrame
             Processed building_loads definitions.
         """
-        return (
-            self.loads_data[
-                [
-                    "hours",
-                    "domestic_hot_water_demand_gfa_scaling_W_m2",
-                    "internal_heat_loads_gfa_scaling_W_m2",
-                ]
+        return self.loads_data[
+            [
+                "hours",
+                "domestic_hot_water_demand_gfa_scaling_W_m2",
+                "internal_heat_loads_gfa_scaling_W_m2",
             ]
-            .sort_values(by="hours")
-            .drop_duplicates()
-        )
+        ]
 
     def building_archetype__building_loads(self):
         """
@@ -443,17 +442,17 @@ class ABMDefinitions:
             self.data.set_index("building_loads")["building_scope"]
         ).rename(columns={"building_scope": "building_archetype"})
         return (
-            df.reset_index()
-            .set_index("building_archetype")[
+            df.reset_index()[
                 [
+                    "building_archetype",
                     "building_loads",
                     "hours",
                     "indoor_air_heating_set_point_override_K",
                     "indoor_air_cooling_set_point_override_K",
                 ]
             ]
-            .sort_values(by=["building_loads", "hours"])
             .drop_duplicates()
+            .set_index("building_archetype")
         )
 
     def export_csvs(self, folderpath="definitions/"):
@@ -486,8 +485,8 @@ class ABMDefinitions:
         self.building_node__structure_type.sort_index().to_csv(
             folderpath + "building_node__structure_type.csv"
         )
-        self.building_loads().sort_index().to_csv(folderpath + "building_loads.csv")
-        self.building_archetype__building_loads().sort_index().to_csv(
+        self.building_loads().to_csv(folderpath + "building_loads.csv")
+        self.building_archetype__building_loads().to_csv(
             folderpath + "building_archetype__building_loads.csv"
         )
 
