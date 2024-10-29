@@ -17,11 +17,13 @@ class ABMDefinitions:
         ambience,
         building_fabrics_path="definitions_assumptions/building_fabrics_and_nodes.csv",
         building_nodes_path="definitions_assumptions/building_nodes_and_structures.csv",
+        loads_mapping_path="definitions_assumptions/country_loads_mapping.csv",
+        loads_path="definitions_assumptions/loads_and_set_points.csv",
         room_height_m=2.6,
-        weather_start="2016-01-01",
-        weather_end="2016-01-02",
+        weather_start="2015-01-01",
+        weather_end="2015-01-02",
         partition_wall_length_ratio_to_external_walls_m_m=0.5,
-        window_area_thermal_bridge_surcharge_W_m2K=0.0,
+        window_area_thermal_bridge_surcharge_W_m2K=0.1,
         aggregate_building_type=True,
         aggregate_building_period=True,
     ):
@@ -34,6 +36,12 @@ class ABMDefinitions:
             the pre-processed AmBIENCe project raw dataset.
         building_fabrics_path : str
             path to a .csv file containing assumptions regarding the building RC-model structure.
+        building_nodes_path : str
+            path to a .csv file containing assumed lumped-capacitance node configuration.
+        loads_mapping_path : str
+            path to a .csv file mapping countries to timezones and load/setpoint profiles.
+        loads_path : str
+            path to a .csv file defining domestic hot water, internal heat gains, and heating/cooling set point profiles.
         room_height_m : float
             assumed height of rooms/storeys in metres, default based on AmBIENCe `D4.1 Database of grey-box model parameter values for EU building typologies`.
         weather_start : datetime-like str
@@ -43,7 +51,7 @@ class ABMDefinitions:
         partition_wall_length_ratio_to_external_walls_m_m : float
             Assumed length of partition walls relative to the exterior walls, default 0.5 based on AmBIENCe.
         window_area_thermal_bridge_surcharge_W_m2K : float
-            Assumed thermal bridging of windows, thermal bridges neglected in AmBIENCe, thus default 0.0?
+            Assumed thermal bridging of windows, default 0.1 based on TABULA.
         aggregate_building_type : bool
             Flag to aggregate building types according to "data_assumptions/building_type_mappings.csv".
         aggregate_building_period : bool
@@ -65,10 +73,13 @@ class ABMDefinitions:
         self.building_node__structure_type = pd.read_csv(building_nodes_path).set_index(
             "structure_type"
         )
+        self.loads_mapping = pd.read_csv(loads_mapping_path).set_index("country")
+        self.loads = pd.read_csv(loads_path)
         self.data = self.preprocess_data(
             aggregate_building_type,
             aggregate_building_period,
         )
+        self.loads_data = self.preprocess_loads()
 
     def preprocess_data(
         self,
@@ -150,6 +161,58 @@ class ABMDefinitions:
         df = df.join(agg_df, on="building_scope")
         df["weight_within_scope"] = (
             df["total_gross_floor_area_m2"] / df["total_gross_floor_area_m2_per_scope"]
+        )
+        # Join timezones and load mappings
+        df = df.join(self.loads_mapping, on="location_id")
+        # Form `building_loads` id
+        df["building_loads"] = (
+            df["loads"] + "_" + df["category"] + "_UTC+" + df["timezone"].apply(str)
+        )
+        return df
+
+    def preprocess_loads(self):
+        """
+        Create the necessary timezoned building_loads.
+
+        Returns
+        -------
+        df : DataFrame
+            Preprocessed building loads data.
+        """
+        # Figure out the load categories and timeseries
+        df1 = self.loads_mapping.reset_index()[["timezone", "loads"]].drop_duplicates()
+        df2 = self.loads.reset_index()[["loads", "category"]].drop_duplicates()
+        df = df1.join(df2.set_index("loads"), on="loads")
+        # Form the full timezoned loads
+        df = self.loads.join(df.set_index("loads")[["timezone"]], on="loads")
+        df["hour"] = (df["hour"] + df["timezone"]) % 24
+        df["hours"] = "h" + df["hour"].apply(str) + "-" + (df["hour"] + 1).apply(str)
+        # Form `building_loads` id
+        df["building_loads"] = (
+            df["loads"] + "_" + df["category"] + "_UTC+" + df["timezone"].apply(str)
+        )
+        # Map to corresponding `building_archetype`
+        # df = df.join(
+        #    self.data[["building_scope", "building_loads"]].set_index("building_loads"),
+        #    on="building_loads",
+        # )
+        # Reorganize
+        df = (
+            df.set_index("building_loads")[
+                [
+                    "loads",
+                    "category",
+                    "timezone",
+                    "hour",
+                    "hours",
+                    "domestic_hot_water_demand_gfa_scaling_W_m2",
+                    "internal_heat_loads_gfa_scaling_W_m2",
+                    "indoor_air_heating_set_point_override_K",
+                    "indoor_air_cooling_set_point_override_K",
+                ]
+            ]
+            .sort_index()
+            .sort_values(by=["loads", "category", "timezone", "hour"])
         )
         return df
 
@@ -346,6 +409,44 @@ class ABMDefinitions:
             ]
         ].drop_duplicates()
 
+    def building_loads(self):
+        """
+        Compile building loads definitions for export
+
+        Returns
+        -------
+        df : DataFrame
+            Processed building_loads definitions.
+        """
+        return self.loads_data[
+            [
+                "hours",
+                "domestic_hot_water_demand_gfa_scaling_W_m2",
+                "internal_heat_loads_gfa_scaling_W_m2",
+            ]
+        ]
+
+    def building_archetype__building_loads(self):
+        """
+        Connect archetype buildings to their respective loads and set points.
+
+        Returns
+        -------
+        df : DataFrame
+            Processed archetype_building__building_loads definitions.
+        """
+        df = self.loads_data.join(
+            self.data.set_index("building_loads")["building_scope"]
+        ).rename(columns={"building_scope": "building_archetype"})
+        return df.reset_index().set_index("building_archetype")[
+            [
+                "building_loads",
+                "hours",
+                "indoor_air_heating_set_point_override_K",
+                "indoor_air_cooling_set_point_override_K",
+            ]
+        ]
+
     def export_csvs(self, folderpath="definitions/"):
         """
         Sort and export the ABMDefinitions contents as .csv files.
@@ -375,6 +476,10 @@ class ABMDefinitions:
         self.building_fabrics.sort_index().to_csv(folderpath + "building_fabrics.csv")
         self.building_node__structure_type.sort_index().to_csv(
             folderpath + "building_node__structure_type.csv"
+        )
+        self.building_loads().sort_index().to_csv(folderpath + "building_loads.csv")
+        self.building_archetype__building_loads().sort_index().to_csv(
+            folderpath + "building_archetype__building_loads.csv"
         )
 
     def create_datapackage(self, folderpath="definitions/"):
