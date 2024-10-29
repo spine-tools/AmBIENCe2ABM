@@ -186,16 +186,16 @@ class ABMDefinitions:
         # Form the full timezoned loads
         df = self.loads.join(df.set_index("loads")[["timezone"]], on="loads")
         df["hour"] = (df["hour"] + df["timezone"]) % 24
-        df["hours"] = "h" + df["hour"].apply(str) + "-" + (df["hour"] + 1).apply(str)
+        df["hours"] = (
+            "h"
+            + df["hour"].apply(str).str.zfill(2)
+            + "-"
+            + (df["hour"] + 1).apply(str).str.zfill(2)
+        )
         # Form `building_loads` id
         df["building_loads"] = (
             df["loads"] + "_" + df["category"] + "_UTC+" + df["timezone"].apply(str)
         )
-        # Map to corresponding `building_archetype`
-        # df = df.join(
-        #    self.data[["building_scope", "building_loads"]].set_index("building_loads"),
-        #    on="building_loads",
-        # )
         # Reorganize
         df = (
             df.set_index("building_loads")[
@@ -214,7 +214,7 @@ class ABMDefinitions:
             .sort_index()
             .sort_values(by=["loads", "category", "timezone", "hour"])
         )
-        return df
+        return df.drop_duplicates()
 
     def calculate_building_frame_depth(self, df, rounding=2):
         """
@@ -418,13 +418,17 @@ class ABMDefinitions:
         df : DataFrame
             Processed building_loads definitions.
         """
-        return self.loads_data[
-            [
-                "hours",
-                "domestic_hot_water_demand_gfa_scaling_W_m2",
-                "internal_heat_loads_gfa_scaling_W_m2",
+        return (
+            self.loads_data[
+                [
+                    "hours",
+                    "domestic_hot_water_demand_gfa_scaling_W_m2",
+                    "internal_heat_loads_gfa_scaling_W_m2",
+                ]
             ]
-        ]
+            .sort_values(by="hours")
+            .drop_duplicates()
+        )
 
     def building_archetype__building_loads(self):
         """
@@ -438,14 +442,19 @@ class ABMDefinitions:
         df = self.loads_data.join(
             self.data.set_index("building_loads")["building_scope"]
         ).rename(columns={"building_scope": "building_archetype"})
-        return df.reset_index().set_index("building_archetype")[
-            [
-                "building_loads",
-                "hours",
-                "indoor_air_heating_set_point_override_K",
-                "indoor_air_cooling_set_point_override_K",
+        return (
+            df.reset_index()
+            .set_index("building_archetype")[
+                [
+                    "building_loads",
+                    "hours",
+                    "indoor_air_heating_set_point_override_K",
+                    "indoor_air_cooling_set_point_override_K",
+                ]
             ]
-        ]
+            .sort_values(by=["building_loads", "hours"])
+            .drop_duplicates()
+        )
 
     def export_csvs(self, folderpath="definitions/"):
         """
