@@ -30,7 +30,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "Base"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -150,7 +151,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "Base"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -273,7 +275,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "Base"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -334,7 +337,7 @@
                             {
                                 "map_type": "EntityClass",
                                 "position": "table_name",
-                                "value": "building_stock__heat_source"
+                                "value": "building_scope__heat_source"
                             },
                             {
                                 "map_type": "Dimension",
@@ -435,14 +438,160 @@
                             },
                             {
                                 "map_type": "Element",
-                                "position": 0
+                                "position": 0,
+                                "import_entities": true
                             },
                             {
                                 "map_type": "Element",
-                                "position": 1
+                                "position": 1,
+                                "import_entities": true
                             },
                             {
                                 "map_type": "EntityMetadata",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "building_archetype__building_loads": [
+                {
+                    "building_archetype__building_loads": {
+                        "mapping": [
+                            {
+                                "map_type": "EntityClass",
+                                "position": "table_name",
+                                "value": "building_archetype__building_loads"
+                            },
+                            {
+                                "map_type": "Dimension",
+                                "position": "header",
+                                "value": 0
+                            },
+                            {
+                                "map_type": "Dimension",
+                                "position": "header",
+                                "value": 1
+                            },
+                            {
+                                "map_type": "Entity",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "Element",
+                                "position": 0,
+                                "import_entities": true
+                            },
+                            {
+                                "map_type": "Element",
+                                "position": 1,
+                                "import_entities": true
+                            },
+                            {
+                                "map_type": "EntityMetadata",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "set_points": {
+                        "mapping": [
+                            {
+                                "map_type": "EntityClass",
+                                "position": "header",
+                                "value": 0,
+                                "skip_columns": [
+                                    1
+                                ]
+                            },
+                            {
+                                "map_type": "Entity",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "EntityMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "Base"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": "header"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueType",
+                                "position": "hidden",
+                                "value": "time_pattern"
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "header"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 2
+                            },
+                            {
+                                "map_type": "ExpandedValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "building_loads": [
+                {
+                    "building_loads": {
+                        "mapping": [
+                            {
+                                "map_type": "EntityClass",
+                                "position": "table_name",
+                                "value": "building_loads"
+                            },
+                            {
+                                "map_type": "Entity",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "EntityMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "Base"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": "header"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueType",
+                                "position": "hidden",
+                                "value": "time_pattern"
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "header"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 1
+                            },
+                            {
+                                "map_type": "ExpandedValue",
                                 "position": "hidden"
                             }
                         ]
@@ -457,7 +606,9 @@
             "building_scope",
             "building_scope__heat_source",
             "building_scope__building_type",
-            "building_scope__location_id"
+            "building_scope__location_id",
+            "building_archetype__building_loads",
+            "building_loads"
         ],
         "table_options": {
             "building_archetype": {},
@@ -466,7 +617,9 @@
             "building_scope": {},
             "building_scope__heat_source": {},
             "building_scope__building_type": {},
-            "building_scope__location_id": {}
+            "building_scope__location_id": {},
+            "building_archetype__building_loads": {},
+            "building_loads": {}
         },
         "table_types": {
             "building_archetype": {
@@ -498,8 +651,8 @@
             "building_scope": {
                 "0": "string",
                 "1": "string",
-                "2": "string",
-                "3": "string"
+                "2": "float",
+                "3": "float"
             },
             "building_scope__heat_source": {
                 "0": "string",
@@ -512,6 +665,19 @@
             "building_scope__location_id": {
                 "0": "string",
                 "1": "string"
+            },
+            "building_archetype__building_loads": {
+                "0": "string",
+                "1": "string",
+                "2": "string",
+                "3": "float",
+                "4": "float"
+            },
+            "building_loads": {
+                "0": "string",
+                "1": "string",
+                "2": "float",
+                "3": "float"
             }
         },
         "table_default_column_type": {},
