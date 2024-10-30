@@ -10,6 +10,16 @@ as indicated by the master `README.md`.
 See brief explanations of the contents below:
 
 
+## building_archetype__building_loads.csv
+
+Maps example archetype building definitions to their respective building loads
+definitions.
+
+Also contains timezoned timepatterns for heating and cooling set points
+based on `definitions_assumptions/country_loads_mapping.csv`
+and `definitions_assumptions/loads_and_set_points.csv`.
+
+
 ## building_archetype.csv
 
 Contains example archetype building definitions.
@@ -31,6 +41,15 @@ thermal models for the archetype buildings.
 
 Essentially links `building_node`s to `building_fabrics`,
 and specifies the `interior_air_and_furniture_weight`.
+
+
+## building_loads.csv
+
+Contains definitions for building loads.
+
+Essentially, defines daily domestic hot water demand and internal heat gain
+demand patterns based on `definitions_assumptions/country_loads_mapping.csv`
+and `definitions_assumptions/loads_and_set_points.csv`.
 
 
 ## building_node__structure_type.csv

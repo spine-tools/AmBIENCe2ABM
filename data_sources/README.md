@@ -17,6 +17,10 @@ deliverables for the composition and properties of the building stocks.
 shapefiles for eventual weather data processing via
 [ArchetypeBuildingModel.jl](https://github.com/vttresearch/ArchetypeBuildingModel).
 
+[Natural Earth](https://www.naturalearthdata.com/)
+country shapefiles were used to fill in blanks not covered by the
+above NUTS shapefiles.
+
 
 ## gfa_nonres_curr_density/
 
@@ -28,10 +32,3 @@ non-residential building stock heating demand density across Europe.
 
 [Hotmaps project](https://www.hotmaps-project.eu/) georaster data for
 residential building stock heating demand density across Europe.
-
-
-## natural_earth/
-
-[Natural Earth](https://www.naturalearthdata.com/)
-country shapefiles to fill in blanks not covered by the
-above NUTS shapefiles.

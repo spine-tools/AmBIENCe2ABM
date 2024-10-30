@@ -47,8 +47,8 @@
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "1.0.0",
-  "created": "2024-10-21T14:09:41.474071",
+  "version": "1.1.0",
+  "created": "2024-10-29T15:05:38.234135",
   "resources": [
     {
       "name": "building_archetype",
@@ -124,6 +124,39 @@
       }
     },
     {
+      "name": "building_archetype__building_loads",
+      "type": "table",
+      "path": "definitions\\building_archetype__building_loads.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_archetype",
+            "type": "string"
+          },
+          {
+            "name": "building_loads",
+            "type": "string"
+          },
+          {
+            "name": "hours",
+            "type": "string"
+          },
+          {
+            "name": "indoor_air_heating_set_point_override_K",
+            "type": "number"
+          },
+          {
+            "name": "indoor_air_cooling_set_point_override_K",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
       "name": "building_fabrics",
       "type": "table",
       "path": "definitions\\building_fabrics.csv",
@@ -144,6 +177,35 @@
           {
             "name": "interior_air_and_furniture_weight",
             "type": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "building_loads",
+      "type": "table",
+      "path": "definitions\\building_loads.csv",
+      "scheme": "file",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "building_loads",
+            "type": "string"
+          },
+          {
+            "name": "hours",
+            "type": "string"
+          },
+          {
+            "name": "domestic_hot_water_demand_gfa_scaling_W_m2",
+            "type": "number"
+          },
+          {
+            "name": "internal_heat_loads_gfa_scaling_W_m2",
+            "type": "number"
           }
         ]
       }
