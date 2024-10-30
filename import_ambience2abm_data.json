@@ -141,19 +141,23 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header"
+                                "position": "header",
+                                "value": 0
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header"
+                                "position": "header",
+                                "value": 1
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header"
+                                "position": "header",
+                                "value": 2
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header"
+                                "position": "header",
+                                "value": 3
                             },
                             {
                                 "map_type": "Entity",
