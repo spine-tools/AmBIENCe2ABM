@@ -47,8 +47,8 @@
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "1.1.0",
-  "created": "2024-10-29T15:05:38.234135",
+  "version": "1.1.1",
+  "created": "2024-10-31T12:51:38.342864",
   "resources": [
     {
       "name": "building_archetype",
@@ -119,6 +119,14 @@
           {
             "name": "reference_roof_area_m2",
             "type": "number"
+          },
+          {
+            "name": "grid_name",
+            "type": "string"
+          },
+          {
+            "name": "node_name",
+            "type": "string"
           }
         ]
       }

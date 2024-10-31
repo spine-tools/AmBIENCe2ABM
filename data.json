@@ -47,8 +47,8 @@
     "ABM.jl",
     "ArchetypeBuildingModel.jl"
   ],
-  "version": "1.1.0",
-  "created": "2024-10-29T15:05:37.648749",
+  "version": "1.1.1",
+  "created": "2024-10-31T12:51:37.743158",
   "resources": [
     {
       "name": "building_period",
@@ -247,7 +247,7 @@
           },
           {
             "name": "linear_thermal_bridge_W_mK",
-            "type": "integer"
+            "type": "number"
           },
           {
             "name": "is_internal",

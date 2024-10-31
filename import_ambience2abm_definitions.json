@@ -13,7 +13,9 @@
                                 "value": "building_archetype",
                                 "skip_columns": [
                                     1,
-                                    2
+                                    2,
+                                    15,
+                                    16
                                 ]
                             },
                             {
@@ -119,6 +121,75 @@
                             },
                             {
                                 "map_type": "EntityMetadata",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "building_archetype__system_link_node": {
+                        "mapping": [
+                            {
+                                "map_type": "EntityClass",
+                                "position": "table_name",
+                                "skip_columns": [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5,
+                                    6,
+                                    7,
+                                    8,
+                                    9,
+                                    10,
+                                    11,
+                                    12,
+                                    13,
+                                    14
+                                ]
+                            },
+                            {
+                                "map_type": "Dimension",
+                                "position": "hidden",
+                                "value": "building_archetype"
+                            },
+                            {
+                                "map_type": "Dimension",
+                                "position": "hidden",
+                                "value": "building_node"
+                            },
+                            {
+                                "map_type": "Entity",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "Element",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "Element",
+                                "position": "hidden",
+                                "value": "@system_link_node_1"
+                            },
+                            {
+                                "map_type": "EntityMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": "header"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
                                 "position": "hidden"
                             }
                         ]
@@ -637,7 +708,9 @@
                 "11": "float",
                 "12": "float",
                 "13": "float",
-                "14": "float"
+                "14": "float",
+                "15": "string",
+                "16": "string"
             },
             "building_fabrics": {
                 "0": "string",
