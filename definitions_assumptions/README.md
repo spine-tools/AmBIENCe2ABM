@@ -23,13 +23,15 @@ Assumed configuration of `structure_type`s on `building_node`s.
 Translates directly into `definitions/building_node__structure_type.csv`.
 
 
-## country_loads_mapping.csv
+## countries.csv
 
-Maps countries to their respective timezones and assumed load and heating profiles.
+Contains country-level definitions, e.g. timezones.
 
-In essence, "Nordic" countries including DK, EE, FI, LT, LV, NO, and SE are
-assumed to use the `nordic` profiles, while the rest of the countries use
+"Nordic" countries including DK, EE, FI, LT, LV, NO, and SE are
+assumed to use the `nordic` load profiles, while the rest of the countries use
 the `central` profiles.
+Also maps countries to their respective grids and nodes
+for energy system definitions.
 
 
 ## loads_and_set_points.csv

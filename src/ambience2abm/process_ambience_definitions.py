@@ -17,7 +17,7 @@ class ABMDefinitions:
         ambience,
         building_fabrics_path="definitions_assumptions/building_fabrics_and_nodes.csv",
         building_nodes_path="definitions_assumptions/building_nodes_and_structures.csv",
-        loads_mapping_path="definitions_assumptions/country_loads_mapping.csv",
+        countries_path="definitions_assumptions/countries.csv",
         loads_path="definitions_assumptions/loads_and_set_points.csv",
         room_height_m=2.6,
         weather_start="2016-01-01",
@@ -38,8 +38,8 @@ class ABMDefinitions:
             path to a .csv file containing assumptions regarding the building RC-model structure.
         building_nodes_path : str
             path to a .csv file containing assumed lumped-capacitance node configuration.
-        loads_mapping_path : str
-            path to a .csv file mapping countries to timezones and load/setpoint profiles.
+        countries_path : str
+            path to a .csv file with country-level definitions.
         loads_path : str
             path to a .csv file defining domestic hot water, internal heat gains, and heating/cooling set point profiles.
         room_height_m : float
@@ -73,7 +73,7 @@ class ABMDefinitions:
         self.building_node__structure_type = pd.read_csv(building_nodes_path).set_index(
             "structure_type"
         )
-        self.loads_mapping = pd.read_csv(loads_mapping_path).set_index("country")
+        self.loads_mapping = pd.read_csv(countries_path).set_index("country")
         self.loads = pd.read_csv(loads_path)
         self.data = self.preprocess_data(
             aggregate_building_type,
@@ -409,6 +409,8 @@ class ABMDefinitions:
                 "reference_wall_area_m2",
                 "reference_window_area_m2",
                 "reference_roof_area_m2",
+                "grid_name",
+                "node_name",
             ]
         ].drop_duplicates()
 
@@ -436,7 +438,7 @@ class ABMDefinitions:
         Returns
         -------
         df : DataFrame
-            Processed archetype_building__building_loads definitions.
+            Processed building_archetype__building_loads definitions.
         """
         df = self.loads_data.join(
             self.data.set_index("building_loads")["building_scope"]
