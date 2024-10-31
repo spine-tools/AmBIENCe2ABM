@@ -131,7 +131,8 @@
                         "mapping": [
                             {
                                 "map_type": "EntityClass",
-                                "position": "table_name",
+                                "position": "mapping_name",
+                                "value": "building_archetype",
                                 "skip_columns": [
                                     1,
                                     2,
@@ -165,12 +166,14 @@
                             },
                             {
                                 "map_type": "Element",
-                                "position": 0
+                                "position": 0,
+                                "import_entities": true
                             },
                             {
                                 "map_type": "Element",
                                 "position": "hidden",
-                                "value": "@system_link_node_1"
+                                "value": "@system_link_node_1",
+                                "import_entities": true
                             },
                             {
                                 "map_type": "EntityMetadata",
@@ -178,7 +181,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "Base"
                             },
                             {
                                 "map_type": "ParameterDefinition",
@@ -190,7 +194,7 @@
                             },
                             {
                                 "map_type": "ParameterValue",
-                                "position": "hidden"
+                                "position": "header"
                             }
                         ]
                     }
@@ -709,8 +713,8 @@
                 "12": "float",
                 "13": "float",
                 "14": "float",
-                "15": "string",
-                "16": "string"
+                "15": "float",
+                "16": "float"
             },
             "building_fabrics": {
                 "0": "string",
