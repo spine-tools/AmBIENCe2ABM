@@ -132,7 +132,7 @@
                             {
                                 "map_type": "EntityClass",
                                 "position": "mapping_name",
-                                "value": "building_archetype",
+                                "value": "building_archetype__system_link_node",
                                 "skip_columns": [
                                     1,
                                     2,
@@ -713,8 +713,8 @@
                 "12": "float",
                 "13": "float",
                 "14": "float",
-                "15": "float",
-                "16": "float"
+                "15": "string",
+                "16": "string"
             },
             "building_fabrics": {
                 "0": "string",
