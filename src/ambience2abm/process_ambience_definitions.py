@@ -443,7 +443,7 @@ class ABMDefinitions:
         df = self.loads_data.join(
             self.data.set_index("building_loads")["building_scope"]
         ).rename(columns={"building_scope": "building_archetype"})
-        return (
+        df = (
             df.reset_index()[
                 [
                     "building_archetype",
@@ -456,6 +456,7 @@ class ABMDefinitions:
             .drop_duplicates()
             .set_index("building_archetype")
         )
+        return df[df.index.notnull()]
 
     def export_csvs(self, folderpath="definitions/"):
         """
