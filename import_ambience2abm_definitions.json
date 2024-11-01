@@ -56,13 +56,13 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 0
+                                "position": "hidden",
+                                "value": "building_archetype"
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 1
+                                "position": "hidden",
+                                "value": "building_scope"
                             },
                             {
                                 "map_type": "Entity",
@@ -96,13 +96,13 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 0
+                                "position": "hidden",
+                                "value": "building_archetype"
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 2
+                                "position": "hidden",
+                                "value": "building_fabrics"
                             },
                             {
                                 "map_type": "Entity",
@@ -250,13 +250,13 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 1
+                                "position": "hidden",
+                                "value": "building_fabrics"
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 0
+                                "position": "hidden",
+                                "value": "building_node"
                             },
                             {
                                 "map_type": "Entity",
@@ -292,13 +292,13 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 1
+                                "position": "hidden",
+                                "value": "building_node"
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 0
+                                "position": "hidden",
+                                "value": "structure_type"
                             },
                             {
                                 "map_type": "Entity",
@@ -416,13 +416,13 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 0
+                                "position": "hidden",
+                                "value": "building_scope"
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 1
+                                "position": "hidden",
+                                "value": "heat_source"
                             },
                             {
                                 "map_type": "Entity",
@@ -458,13 +458,13 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 0
+                                "position": "hidden",
+                                "value": "building_scope"
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 1
+                                "position": "hidden",
+                                "value": "building_type"
                             },
                             {
                                 "map_type": "Entity",
@@ -499,13 +499,13 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 0
+                                "position": "hidden",
+                                "value": "building_scope"
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 1
+                                "position": "hidden",
+                                "value": "location_id"
                             },
                             {
                                 "map_type": "Entity",
@@ -540,13 +540,13 @@
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 0
+                                "position": "hidden",
+                                "value": "building_archetype"
                             },
                             {
                                 "map_type": "Dimension",
-                                "position": "header",
-                                "value": 1
+                                "position": "hidden",
+                                "value": "building_loads"
                             },
                             {
                                 "map_type": "Entity",
@@ -574,8 +574,8 @@
                         "mapping": [
                             {
                                 "map_type": "EntityClass",
-                                "position": "header",
-                                "value": 0,
+                                "position": "hidden",
+                                "value": "building_archetype",
                                 "skip_columns": [
                                     1
                                 ]
@@ -608,7 +608,8 @@
                             },
                             {
                                 "map_type": "IndexName",
-                                "position": "header"
+                                "position": "hidden",
+                                "value": "hours"
                             },
                             {
                                 "map_type": "ParameterValueIndex",
@@ -659,7 +660,8 @@
                             },
                             {
                                 "map_type": "IndexName",
-                                "position": "header"
+                                "position": "hidden",
+                                "value": "hours"
                             },
                             {
                                 "map_type": "ParameterValueIndex",
