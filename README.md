@@ -19,6 +19,26 @@ A Python package for processing [AmBIENCe project](https://ambience-project.eu/)
 >The AmBIENCe dataset contains no parameters for ventilation and infiltration, which can account for 50+% of building heat losses.
 >Currently, crude assumptions based on the [EPISCOPE-TABULA](https://episcope.eu/welcome/) results are used instead.
 
+This package is part of the [EU project Mopo](https://www.tools-for-energy-system-modelling.org/) building stock data processing,
+and is only the first step of three:
+
+1. _AmBIENCe2ABM_ handles EU-wide building stock input data processing for [_ArchetypeBuildingModel.jl_](https://github.com/vttresearch/ArchetypeBuildingModel) _(ABM.jl)_.
+2. [_Mopo AmBIENCe2ABM Demo_](https://doi.org/10.5281/zenodo.8238141) contains the [_Spine Toolbox_](https://github.com/spine-tools/Spine-Toolbox) workflow using _ABM.jl_ for calculating EU-wide heating and cooling timeseries.
+3. [_MopoHeatSectorDataProcessing_](https://github.com/spine-tools/MopoHeatSectorDataProcessing) post-processes the output from step 2 into input data suitable for the Mopo project case studies.
+
+The geographical data coverage is illustrated below:
+![geoscope](geoscope.png)
+
+
+## Documentation
+
+_AmBIENCe2ABM_ has been documented mainly through `README.md` files including this one.
+Each sub-folder has its own `README.md` describing its contents in more detail.
+This was done to make browsing the contents of this repository in GitHub as convenient and self-explanatory as possible.
+
+Eventually, the _D2.2 deliverable_ will also be published on the [Mopo project website](https://www.tools-for-energy-system-modelling.org/resources/),
+potentially better explaining the overall data processing workflow.
+
 
 ## Key contents
 
@@ -136,11 +156,6 @@ The `update_datapackage.py` takes two optional keyword arguments:
 
 The default values for the above parameters are based on calibrations
 performed in [this publication](https://doi.org/10.3390/buildings14061614).
-
-
-## Documentation
-
-Currently this `README.md` is all you've got besides the docstrings in the code.
 
 
 ## License
