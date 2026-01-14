@@ -36,9 +36,6 @@ _AmBIENCe2ABM_ has been documented mainly through `README.md` files including th
 Each sub-folder has its own `README.md` describing its contents in more detail.
 This was done to make browsing the contents of this repository in GitHub as convenient and self-explanatory as possible.
 
-Eventually, the _D2.2 deliverable_ will also be published on the [Mopo project website](https://www.tools-for-energy-system-modelling.org/resources/),
-potentially better explaining the overall data processing workflow.
-
 
 ## Key contents
 
