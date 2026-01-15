@@ -9,7 +9,7 @@ See brief explanations of the contents below:
 
 >[!IMPORTANT]
 >While this dataset might appear quite impressive on the surface,
->a lot of the data is duplicated accross dimensions to fit the desired format.
+>a lot of the data is duplicated across dimensions to fit the desired format.
 >The data format was originally designed for
 >[FinnishBuildingStockData.jl](https://github.com/vttresearch/FinnishBuildingStockData),
 >which uses high-quality Finnish building stock data.
