@@ -1,4 +1,5 @@
 # AmBIENCe2ABM
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18252929.svg)](https://doi.org/10.5281/zenodo.18252929)
 
 A Python package for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
 [ArchetypeBuildingModel.jl](https://github.com/vttresearch/ArchetypeBuildingModel).
