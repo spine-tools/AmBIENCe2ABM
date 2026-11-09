@@ -4,6 +4,9 @@
 A Python package for processing [AmBIENCe project](https://ambience-project.eu/) EU-wide building stock datasets for
 [ArchetypeBuildingModel.jl](https://github.com/vttresearch/ArchetypeBuildingModel).
 
+>[!IMPORTANT]
+>With the Mopo project ending in 2026, this repository is no longer actively maintained.
+
 >[!NOTE]
 >The AmBIENCe project deliverables used as raw data for this tool are not included under `data_sources/ambience/` because their licensing is yet unclear.
 >Please refer to the References section for where to find the required raw data deliverables.
